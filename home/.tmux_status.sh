@@ -31,7 +31,7 @@ time=$(date +%H:%M)
 # 下一次刷新 (status-interval 1) 就會換過來。
 style=$(cat "$HOME/.config/rice/terminal-style" 2>/dev/null)
 if [ "$style" = "mono" ]; then
-    printf "#[fg=white,bg=default] %s | CPU %s%% | RAM %s%% | LOAD %s | %s | %s " \
+    printf "#[fg=colour39,bg=default] %s | CPU %s%% | RAM %s%% | LOAD %s | %s | %s " \
         "$(whoami)" "$cpu" "$ram" "$load" "$time" "$ip"
     exit 0
 fi
