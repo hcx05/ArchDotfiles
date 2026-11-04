@@ -33,13 +33,6 @@ bspc config remove_unplugged_monitors true
 bspc config merge_overlapping_monitors true
 MonitorSetup
 
-# VMware guest agent (clipboard copy/paste + drag&drop with the host)
-pgrep -f 'vmtoolsd -n vmusr' >/dev/null || vmware-user-suid-wrapper &
-
-# Force 2560x1440 (disable "Autofit Guest" in VMware or it will resize again)
-VMON=$(xrandr | awk '$2=="connected"{print $1; exit}')
-xrandr --output "$VMON" --mode 2560x1440 --primary --pos 0x0
-
 #  ╔╗ ╔═╗╔═╗╦ ╦╔╦╗  ╔═╗╔═╗╔╗╔╔═╗╦╔═╗
 #  ╠╩╗╚═╗╠═╝║║║║║║  ║  ║ ║║║║╠╣ ║║ ╦
 #  ╚═╝╚═╝╩  ╚╩╝╩ ╩  ╚═╝╚═╝╝╚╝╚  ╩╚═╝

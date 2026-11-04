@@ -468,7 +468,7 @@ install_dotfiles() {
     done
 
     # If ppl wanna try my nvim config
-    [ "$try_nvim" = "y" ] && cp -R "$HOME/.local/share/gh0stzk/config/nvim-hcx" "$HOME/.config/nvim"
+    [ "$try_nvim" = "y" ] && cp -R "$HOME/.local/share/gh0stzk/config/nvim" "$HOME/.config/"
 
     # If ppl wanna try my firefox config
     if [ "$try_firefox" = "y" ]; then

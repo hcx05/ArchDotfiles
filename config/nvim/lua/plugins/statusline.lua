@@ -1,10 +1,14 @@
 return {
-
-	plugin = {
-		src = "https://github.com/echasnovski/mini.statusline",
-	},
-
-	config = function()
-		require("mini.statusline").setup({})
-	end,
+  {
+    "nvim-lualine/lualine.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      require("lualine").setup({
+        options = {
+          theme = "auto",
+          globalstatus = true,
+        }
+      })
+    end
+  }
 }
