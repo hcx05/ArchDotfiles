@@ -1,20 +1,32 @@
 #!/bin/sh
-# Toggle: enlarge the focused window by a fixed step; press again to shrink back.
+# Toggle: floating window -> fill the monitor work area (bars stay visible,
+# monitor padding is respected); press again -> restore the old geometry.
+# Non-floating windows are left alone.
 STATE_DIR="/tmp/ToggleMax"
-DX=50
-DY=25
+GAP=10
 mkdir -p "$STATE_DIR"
 
 wid=$(bspc query -N -n focused) || exit 1
 [ -z "$wid" ] && exit 1
 
-mark="$STATE_DIR/$wid"
-if [ -f "$mark" ]; then
-    bspc node "$wid" -z top_left $DX $DY
-    bspc node "$wid" -z bottom_right -$DX -$DY
-    rm -f "$mark"
+node=$(bspc query -T -n "$wid")
+[ "$(printf '%s' "$node" | jq -r '.client.state')" = "floating" ] || exit 0
+
+resize_to() {   # X Y W H
+    cur=$(bspc query -T -n "$wid" | jq -r '.client.floatingRectangle | "\(.x) \(.y) \(.width) \(.height)"')
+    set -- $1 $2 $3 $4 $cur
+    X=$1 Y=$2 W=$3 H=$4 x=$5 y=$6 w=$7 h=$8
+    bspc node "$wid" -z top_left $((X - x)) $((Y - y))
+    bspc node "$wid" -z bottom_right $((X + W - x - w)) $((Y + H - y - h))
+}
+
+saved="$STATE_DIR/$wid"
+if [ -f "$saved" ]; then
+    resize_to $(cat "$saved")
+    rm -f "$saved"
 else
-    bspc node "$wid" -z top_left -$DX -$DY
-    bspc node "$wid" -z bottom_right $DX $DY
-    : > "$mark"
+    printf '%s' "$node" | jq -r '.client.floatingRectangle | "\(.x) \(.y) \(.width) \(.height)"' > "$saved"
+    mon=$(bspc query -T -m "$(bspc query -M -n "$wid")")
+    set -- $(printf '%s' "$mon" | jq -r '[.rectangle.x, .rectangle.y, .rectangle.width, .rectangle.height, .padding.left, .padding.top, .padding.right, .padding.bottom] | @tsv')
+    resize_to $(($1 + $5 + GAP)) $(($2 + $6 + GAP)) $(($3 - $5 - $7 - 2*GAP)) $(($4 - $6 - $8 - 2*GAP))
 fi
