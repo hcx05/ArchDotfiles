@@ -154,7 +154,7 @@ alias grub-update="sudo grub-mkconfig -o /boot/grub/grub.cfg"
 alias music="ncmpcpp"
 
 alias cat="bat --theme=base16"
-alias ls='eza --icons=always --color=always -a'
+alias ls='eza --icons=always --color=always'
 alias ll='eza --icons=always --color=always -la'
 
 #  ┌─┐┬ ┬┌┬┐┌─┐  ┌─┐┌┬┐┌─┐┬─┐┌┬┐
@@ -190,3 +190,5 @@ bindkey '^[[5C' forward-word
 bindkey '^[[5D' backward-word
 
 alias vim='nvim'
+
+export PATH="$HOME/.local/share/gem/ruby/3.4.0/bin:$PATH"

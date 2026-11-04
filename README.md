@@ -1,4 +1,4 @@
-# A complete BSPWM Window Manager Environment
+# ArchDotfiles — hcx05's BSPWM Environment
 <div align = center>
 
 ![bspwm-dotfiles](https://github.com/gh0stzk/dotfiles/assets/67278339/0340846a-74d4-4a43-9430-142b0832738d)
@@ -19,14 +19,29 @@ https://github.com/user-attachments/assets/3eaae1e2-04dc-4a9b-8c91-139f85f5fb9e
 
 ## 👻 Welcome
 
-Welcome to my dotfiles. I’m gh0stzk from Mexico.
+Welcome to my dotfiles. This repo is a personal fork of [gh0stzk/dotfiles](https://github.com/gh0stzk/dotfiles) (GPL-3.0), customized by [hcx05](https://github.com/hcx05) for daily use on Arch Linux: Traditional Chinese input, a transparent tmux status bar, a trimmed Neovim setup, a pentest toolkit and a handful of keybinding changes. All the credit for the base rice (themes, bars, applets, RiceEditor, ...) goes to gh0stzk.
 
 These dotfiles are designed with the goal of providing a bspwm environment that is lightweight, efficient, and functional, tailored for any use—whether it’s gaming, web browsing, or a productive work setting.
 
 You’ll have 18 unique themes to choose from, each with its own style, colors, and navigation bar options. With this variety, you’re sure to find one that suits your preferences and needs.
 
+## 🔧 What's different in this fork
+
+| Area | Change |
+| :--- | :--- |
+| Input method | `ibus` + `ibus-chewing` (Zhuyin). `Super + i` or a lone tap on **Right Shift** (via `xcape`) toggles English ⇄ Chewing, see `config/bspwm/bin/toggle-ibus.sh` |
+| Clipboard | `Super + v` opens a clipboard-history picker (`config/rice/clipboard`), pick an entry to paste it into the window |
+| Windows | `Super + Shift + M` (`ToggleMax`) fills the work area of a floating window (bars stay visible) and restores it on the second press. `Super + Ctrl + arrows/hjkl` resizes, falling back to the opposite edge at screen borders |
+| Keybindings | Close = `Super + Shift + Q`, launcher = `Super + d`, layout is Vim-friendly. See [Keybindings](#very-useful-keybindigs-to-know) |
+| Tmux | Transparent status bar with sky-blue text, live system stats. See [Tmux Setup](#tmux-setup) |
+| Neovim | Own lightweight setup (catppuccin, telescope, nvim-tree, nvim-cmp, Copilot, Python/C/C++ run key). See [Neovim Setup](#neovim-setup) |
+| Zsh | Extra aliases and key bindings, see [Zsh](#optimized-zsh-configuration) |
+| Fastfetch | Arch logo config in `config/fastfetch` |
+| Pentest | `misc/pentest`: tool list + `install-pentest-tools.sh` |
+| Installer | `RiceInstaller` clones **this** repo, installs tmux/tpm, ibus, xcape and fixes permissions of the helper scripts |
+
 ## :book: Wiki
-I already started writing the [**Wiki**](https://github.com/gh0stzk/dotfiles/wiki), you should give it a read. If it is your first time with a WM, you may be interested in reading [First steps after installing the dotfiles](https://github.com/gh0stzk/dotfiles/wiki/Firsts-steps-after-installing) or maybe read [frequently asked questions and answers](https://github.com/gh0stzk/dotfiles/wiki/Questions---Answers) [Keybinds](https://github.com/gh0stzk/dotfiles/wiki/Keyboard-Shortcuts) [Firefox Theme](https://github.com/gh0stzk/dotfiles/wiki/Firefox-Theme).
+These are the upstream docs (they describe the original rice, some keybindings differ in this fork — the table below is the source of truth). Start with the upstream [**Wiki**](https://github.com/gh0stzk/dotfiles/wiki). If it is your first time with a WM, you may be interested in reading [First steps after installing the dotfiles](https://github.com/gh0stzk/dotfiles/wiki/Firsts-steps-after-installing) or maybe read [frequently asked questions and answers](https://github.com/gh0stzk/dotfiles/wiki/Questions---Answers) [Keybinds](https://github.com/gh0stzk/dotfiles/wiki/Keyboard-Shortcuts) [Firefox Theme](https://github.com/gh0stzk/dotfiles/wiki/Firefox-Theme).
 
 ## 🚀 Features
 <img src="https://user-images.githubusercontent.com/67278339/221605474-21d65156-0cf7-485c-bd1a-40792c37817e.png" alt="Linux Fetch" align="right" width="450">
@@ -138,21 +153,37 @@ Rofi applets to simplify your workflow:
 
 #### Neovim Setup
 
-Simple yet powerful neovim configuration with the following features:
+Lightweight Lua config (`config/nvim`, plugin manager [lazy.nvim](https://github.com/folke/lazy.nvim), leader = `Space`):
 
-- Treesitter
-- Lsp servers
-- Completions [blink.nvim](https://github.com/Saghen/blink.nvim)
-- Formatting [conform.nvim](https://github.com/stevearc/conform.nvim)
-- Picker [Snacks-picker](https://github.com/folke/snacks.nvim/blob/main/docs/picker.md)
-- Explorer [Snacks-explorer](https://github.com/folke/snacks.nvim/blob/main/docs/picker.md)
-- Tab Line [barbar.nvim](https://github.com/romgrk/barbar.nvim)
+- Colorscheme [catppuccin](https://github.com/catppuccin/nvim) + [transparent.nvim](https://github.com/xiyaowong/transparent.nvim)
+- Treesitter and native LSP (`pyright`, ...)
+- Completion [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) + LuaSnip
+- Fuzzy finder [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
+- File tree [nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua)
 - Statusline [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim)
-- Autopairs [mini-autopairs](https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-pairs.md)
-- Hipatterns [mini-hipatterns](https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-hipatterns.md)
-- Indent guides [Snacks-indent](https://github.com/folke/snacks.nvim/blob/main/docs/indent.md)
-- Dashboard [Snacks-dashboard](https://github.com/folke/snacks.nvim/blob/main/docs/dashboard.md)
-- WhichKey [which-key.nvim](https://github.com/folke/which-key.nvim)
+- Terminal [toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim)
+- Dashboard [alpha-nvim](https://github.com/goolord/alpha-nvim), notifications [nvim-notify](https://github.com/rcarriga/nvim-notify), autopairs
+- AI: [copilot.vim](https://github.com/github/copilot.vim) and [CopilotChat.nvim](https://github.com/CopilotC-Nvim/CopilotChat.nvim)
+
+| Keys | Action |
+| :--: | :----- |
+| `Space` + `r` | Save and build/run the file (C: `gcc`, C++: `g++`, Python: `python3`) in toggleterm |
+| `Space` + `f` | Format a Python file with `ruff` |
+| `Space` + `y` | Yank to the system clipboard (normal / visual) |
+| `K` | Show diagnostics float |
+
+#### Tmux Setup
+
+Minimal but complete tmux configuration (`~/.tmux.conf` + `~/.tmux_status.sh`):
+
+- Status bar at the bottom, refreshed every second: `user | CPU | RAM | LOAD | time | IP`
+- **Mono theme**: transparent background and sky-blue text (`colour39`, `#00afff`). To recolor, change `colour39` in `~/.tmux.conf` and in the `mono` branch of `~/.tmux_status.sh`
+- Non-mono themes get a powerline-style gradient bar
+- The terminal style is read from `~/.config/rice/terminal-style` and `~/.config/rice/tmux-theme.conf`
+- `tmux-256color` with true color, `escape-time 0`, `allow-passthrough on` (kitty graphics, e.g. fastfetch logo)
+- Mouse on, vi copy-mode (`v` select, `y` copy through `xclip`, mouse drag copies and exits), `Prefix + ]` pastes from the system clipboard
+- Pane navigation: `Prefix + h/j/k/l`
+- Plugins via [tpm](https://github.com/tmux-plugins/tpm): `tmux-sensible`, `tmux-yank` (installed automatically by `RiceInstaller`; otherwise press `Prefix + I`)
 
 #### Optimized ZSH Configuration
 
@@ -163,17 +194,9 @@ Optimized, native ZSH configuration. Not __Oh-My-Zsh__ or other bloated plugin m
 - Syntax highlighting
 - History substring search
 - Fzf-tab completion with previews!!
-
-#### Tmux Setup
-
-Minimal tmux configuration (`~/.tmux.conf` + `~/.tmux_status.sh`):
-
-- Status bar at the bottom with live `user | CPU | RAM | LOAD | time | IP`, refreshed every second
-- Mono theme: transparent background, sky blue text (`colour39`). Change `colour39` in `~/.tmux.conf` and `~/.tmux_status.sh` to recolor
-- Powerline-style gradient status bar when the theme is not mono
-- Mouse support, vi copy-mode keys, `xclip` clipboard integration
-- `Prefix + h/j/k/l` pane navigation
-- Plugins via [tpm](https://github.com/tmux-plugins/tpm): tmux-sensible, tmux-yank
+- Aliases: `ls` / `ll` (eza with icons), `cat` (bat), `vim` (nvim), `music` (ncmpcpp), `update` (`paru -Syu`), `mirrors` (reflector), `grub-update`
+- `Ctrl + ←/→` word jump, `Home`/`End`/`Delete`, `↑/↓` history substring search
+- `EDITOR=geany`, `BROWSER=firefox`, `FILEMANAGER=thunar`
 
 ---
 
@@ -362,22 +385,91 @@ https://github.com/user-attachments/assets/79764678-c519-4a41-a333-2a862a6d10f8
 
 ## Very useful keybindigs to know...
 
-| Keys | Action |
-| :-------------------: | :---------------------------------------------------------------: |
-| `super` + `x` | Close Windows |
-| `super` + `Enter`<br>`super` + `alt` + `Enter` | Open a terminal<br>Open a floating terminal. |
-| `alt` + `@space` | Display menu to select a theme. |
-| `super` + `@space` | Apps Menu. |
-| `super` + `alt` + `@space` | Bar Selector. |
-| `super` + `alt` + `w`| Opens a menu to select a wallpaper. |
-| `super` + `alt` + `h`<br>`super` + `alt` + `u` | Hides bar/s<br>unhide bar/s |
-| `super` + `alt` + `s` | Takes screenshot. |
-| `ctrl` + `alt` + `[plus,minus,t]` | Changes transparency on focused window. |
-| `ctrl` + `super` + `alt` + `p`<br>`ctrl` + `super` + `alt` + `r`<br>`ctrl` + `super` + `alt` + `k` | Power off computer<br>Restart computer<br>Brute kill a window/process |
-| `super` + `alt` + `r` | Restart bspwm. |
-| `alt` + `F1` | Show keybinds cheatsheet |
+`super` is the Windows key. Press `alt + F1` for the built-in cheatsheet, or read `config/bspwm/config/sxhkdrc`.
 
-And more.. You need to look sxhkdrc file for more, or press Alt + F1 for a cheatsheet.
+**Basics**
+
+| Keys | Action |
+| :--: | :----- |
+| `super` + `Enter` | Terminal |
+| `super` + `alt` + `Enter` | Floating terminal |
+| `super` + `d` | App launcher |
+| `alt` + `Tab` | Window switcher |
+| `alt` + `space` | Theme selector |
+| `super` + `alt` + `space` | Bar selector |
+| `alt` + `F1` | Keybinds cheatsheet |
+| `super` + `i` / tap `Right Shift` | Toggle input method (English ⇄ Chewing) |
+| `super` + `v` | Clipboard history picker |
+
+**Windows**
+
+| Keys | Action |
+| :--: | :----- |
+| `super` + `shift` + `q` | Close window |
+| `super` + `shift` + `x` | Kill window |
+| `super` + `shift` + `t` / `a` / `f` | Tiled / Floating / Fullscreen |
+| `super` + `shift` + `m` | Toggle maximize ⇄ restore (floating windows) |
+| `super` + `shift` + `minus` or `alt` + `h` | Hide (minimize) window |
+| `ctrl` + `alt` + `h` | Menu to restore hidden windows |
+| `super` + `alt` + `←↓↑→` | Focus window in direction |
+| `super` + `shift` + `←↓↑→` | Swap with window in direction |
+| `super` + `ctrl` + `←↓↑→` or `h j k l` | Resize window (shrink/expand width and height) |
+| `super` + `slash` | Rotate desktop 90° |
+| `super` + `equal` | Balance (resize all windows equally) |
+| `ctrl` + `shift` + `comma` / `period` | Focus last window / last desktop |
+
+**Workspaces**
+
+| Keys | Action |
+| :--: | :----- |
+| `super` + `1`…`9`, `0` | Go to workspace 1–10 |
+| `super` + `←` / `→` | Previous / next workspace |
+| `super` + `ctrl` + `1`…`9`, `0` | Send window to workspace |
+| `ctrl` + `shift` + `←` / `→` | Send window to previous / next workspace and follow it |
+
+**Apps**
+
+| Keys | Action |
+| :--: | :----- |
+| `super` + `b` / `e` / `f` | Browser / Editor / File manager |
+| `super` + `y` | Yazi |
+| `super` + `shift` + `v` | Neovim |
+| `super` + `m` | Ncmpcpp music player |
+| `super` + `p` | Pavucontrol |
+| `super` + `t` / `w` | Telegram / WhatsApp |
+| `super` + `r` | RiceEditor |
+| `super` + `alt` + `o` | Scratchpad |
+| Right click on desktop | Jgmenu |
+
+**Rofi applets** (`super` + `alt` + …)
+
+| Keys | Action |
+| :--: | :----- |
+| `t` | Terminal selector |
+| `w` | Wallpaper selector |
+| `s` | Screenshot |
+| `c` | Clipboard (clipcat) |
+| `n` / `b` | Network manager / Bluetooth |
+| `a` | Mount Android phone |
+| `k` | Keyboard layout |
+| `x` | Rofi pass |
+| `l` | Rofi launcher style |
+| `p` | Power menu |
+
+**Session and bars**
+
+| Keys | Action |
+| :--: | :----- |
+| `super` + `alt` + `r` | Restart bspwm |
+| `super` + `Escape` | Reload sxhkd keybinds |
+| `ctrl` + `super` + `alt` + `s` | Soft reload (daemons only) |
+| `ctrl` + `super` + `alt` + `q` | Quit bspwm (log out) |
+| `ctrl` + `super` + `alt` + `l` | Lock screen |
+| `ctrl` + `super` + `alt` + `p` / `r` | Power off / Reboot |
+| `super` + `alt` + `h` / `u` | Hide / unhide bar(s) |
+| `ctrl` + `alt` + `plus` / `minus` / `t` | Window transparency more / less / reset |
+
+Media keys (`XF86Audio*`, `XF86MonBrightness*`) control volume, player and brightness.
 
 ---
 
@@ -399,7 +491,7 @@ And more.. You need to look sxhkdrc file for more, or press Alt + F1 for a cheat
 >
 > Some adjustments may still be needed, such as changing the Picom backend or VSync settings to ensure compatibility with your graphics card.
 >
-> If you encounter any issues, feel free to open an [issue](https://github.com/gh0stzk/dotfiles/issues). :wrench::wrench::wrench:
+> If you encounter any issues, feel free to open an [issue](https://github.com/hcx05/ArchDotfiles/issues). :wrench::wrench::wrench:
 
 ---
 
@@ -408,13 +500,24 @@ And more.. You need to look sxhkdrc file for more, or press Alt + F1 for a cheat
 > [!NOTE]
 > The installer only works for **ARCH** Linux, and based distros. (Except NO-Systemd ditros like Artix)
 
-Before running this command, check [RiceInstaller](https://raw.githubusercontent.com/gh0stzk/dotfiles/master/RiceInstaller) to make sure it's working and confirm it's safe for your system.
+Before running this command, check [RiceInstaller](https://raw.githubusercontent.com/hcx05/ArchDotfiles/master/RiceInstaller) to make sure it's working and confirm it's safe for your system.
 
-- Open a terminal and execute this commands one by one:
+The installer must be run as a **normal user** (not root) from your `$HOME`. It will:
+
+1. Add the `gh0stzk-dotfiles` and `chaotic-aur` pacman repositories (needs `sudo`)
+2. Install the dependencies, including `tmux`, `xcape`, `ibus`, `ibus-chewing`, `neovim`, `zsh`, Nerd fonts, plus AUR packages through `paru`
+3. Clone **this repo** (`hcx05/ArchDotfiles`) to `~/.local/share/gh0stzk`
+4. Back up existing configs to `~/.RiceBackup/<date>` (bspwm, nvim, `.zshrc`, `.tmux.conf`, ...)
+5. Copy configs to `~/.config`, `~/.local` and `$HOME`, make the helper scripts executable and install [tpm](https://github.com/tmux-plugins/tpm) with the tmux plugins
+6. Enable the user MPD service and the ArchUpdates timer, switch your shell to `zsh`
+
+You are asked whether you want the Neovim config and the Firefox theme.
+
+- Open a terminal and execute these commands one by one:
 
 ```sh
 # Download the installer in your $HOME
-curl -LO http://gh0stzk.github.io/dotfiles/RiceInstaller
+curl -LO https://raw.githubusercontent.com/hcx05/ArchDotfiles/master/RiceInstaller
 
 # Give it execution permission
 chmod +x RiceInstaller
@@ -422,3 +525,25 @@ chmod +x RiceInstaller
 # Run the installer
 ./RiceInstaller
 ```
+
+Reboot when it finishes, then log in to **bspwm** from your login manager.
+
+#### After installing
+
+- Input method: run `ibus-setup` once and add **Chinese - Chewing** to the input methods, then use `super + i` to toggle.
+- tmux: if the plugins are missing, start `tmux` and press `Prefix + I`.
+- Pentest toolkit (optional): `bash ~/.local/share/gh0stzk/misc/pentest/install-pentest-tools.sh`, see [`misc/pentest/TOOLS.md`](misc/pentest/TOOLS.md).
+
+#### Updating
+
+To pull my latest changes: `git -C ~/.local/share/gh0stzk pull`, then copy the files you want over your config (or re-run the installer, it backs up first).
+
+---
+
+### Credits
+
+- [gh0stzk](https://github.com/gh0stzk/dotfiles) — original rice, themes, applets and RiceEditor
+- [justaguylinux](https://codeberg.org/justaguylinux/) — layouts script and cheatsheet
+- [ilshatvm](https://github.com/ilshatvm) — BarSelector rofi design
+
+License: [GPL-3.0](LICENSE)
