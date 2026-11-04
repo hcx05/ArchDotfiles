@@ -164,6 +164,17 @@ Optimized, native ZSH configuration. Not __Oh-My-Zsh__ or other bloated plugin m
 - History substring search
 - Fzf-tab completion with previews!!
 
+#### Tmux Setup
+
+Minimal tmux configuration (`~/.tmux.conf` + `~/.tmux_status.sh`):
+
+- Status bar at the bottom with live `user | CPU | RAM | LOAD | time | IP`, refreshed every second
+- Mono theme: transparent background, sky blue text (`colour39`). Change `colour39` in `~/.tmux.conf` and `~/.tmux_status.sh` to recolor
+- Powerline-style gradient status bar when the theme is not mono
+- Mouse support, vi copy-mode keys, `xclip` clipboard integration
+- `Prefix + h/j/k/l` pane navigation
+- Plugins via [tpm](https://github.com/tmux-plugins/tpm): tmux-sensible, tmux-yank
+
 ---
 
 ### 🎨 Launchers
