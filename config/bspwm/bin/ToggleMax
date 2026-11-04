@@ -1,0 +1,36 @@
+#!/bin/sh
+# Toggle: floating window -> fill the monitor work area; press again -> restore.
+# Tiled windows toggle fullscreen instead.
+STATE_DIR="/tmp/ToggleMax"
+mkdir -p "$STATE_DIR"
+
+wid=$(bspc query -N -n focused) || exit 1
+[ -z "$wid" ] && exit 1
+
+node=$(bspc query -T -n "$wid")
+state=$(printf '%s' "$node" | jq -r '.client.state')
+
+if [ "$state" != "floating" ]; then
+    bspc node "$wid" -t '~fullscreen'
+    exit 0
+fi
+
+resize_to() {   # X Y W H
+    cur=$(bspc query -T -n "$wid" | jq -r '.client.floatingRectangle | "\(.x) \(.y) \(.width) \(.height)"')
+    set -- $1 $2 $3 $4 $cur
+    X=$1 Y=$2 W=$3 H=$4 x=$5 y=$6 w=$7 h=$8
+    bspc node "$wid" -z top_left $((X - x)) $((Y - y))
+    bspc node "$wid" -z bottom_right $((X + W - x - w)) $((Y + H - y - h))
+}
+
+saved="$STATE_DIR/$wid"
+if [ -f "$saved" ]; then
+    resize_to $(cat "$saved")
+    rm -f "$saved"
+else
+    printf '%s' "$node" | jq -r '.client.floatingRectangle | "\(.x) \(.y) \(.width) \(.height)"' > "$saved"
+    mon=$(bspc query -T -m "$(bspc query -M -n "$wid")")
+    set -- $(printf '%s' "$mon" | jq -r '[.rectangle.x, .rectangle.y, .rectangle.width, .rectangle.height, .padding.left, .padding.top, .padding.right, .padding.bottom] | @tsv')
+    g=10
+    resize_to $(($1 + $5 + g)) $(($2 + $6 + g)) $(($3 - $5 - $7 - 2*g)) $(($4 - $6 - $8 - 2*g))
+fi

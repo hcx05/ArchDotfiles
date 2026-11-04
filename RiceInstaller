@@ -160,7 +160,7 @@ install_dependencies() {
     sleep 2
 
     sudo pacman -Syy
-    dependencies="alacritty base-devel bat bc brightnessctl bspwm clipcat dunst eza feh fzf thunar tumbler gvfs-mtp firefox geany git imagemagick jq jgmenu kitty libwebp maim mpc mpd mpv neovim xcolor ncmpcpp npm pamixer pacman-contrib papirus-icon-theme picom playerctl polybar lxsession python-gobject redshift rofi rustup sxhkd xclip xdg-user-dirs xdo xdotool xsettingsd xorg-xdpyinfo xorg-xkill xorg-xprop xorg-xrandr xorg-xsetroot xorg-xwininfo xorg-xrdb yazi zsh zsh-autosuggestions zsh-history-substring-search zsh-syntax-highlighting ttf-inconsolata ttf-jetbrains-mono ttf-jetbrains-mono-nerd ttf-terminus-nerd ttf-ubuntu-mono-nerd webp-pixbuf-loader"
+    dependencies="alacritty base-devel bat bc brightnessctl bspwm clipcat dunst eza feh fzf thunar tumbler gvfs-mtp firefox geany git imagemagick jq jgmenu kitty libwebp maim mpc mpd mpv neovim xcolor ncmpcpp npm pamixer pacman-contrib papirus-icon-theme picom playerctl polybar lxsession python-gobject redshift rofi rustup sxhkd xclip xdg-user-dirs xdo xdotool xsettingsd xorg-xdpyinfo xorg-xkill xorg-xprop xorg-xrandr xorg-xsetroot xorg-xwininfo xorg-xrdb yazi zsh zsh-autosuggestions zsh-history-substring-search zsh-syntax-highlighting ttf-inconsolata tmux xcape fastfetch ibus ibus-chewing ttf-jetbrains-mono ttf-jetbrains-mono-nerd ttf-terminus-nerd ttf-ubuntu-mono-nerd webp-pixbuf-loader"
 
     # Arrays temporales
     failed_deps=""
@@ -355,7 +355,7 @@ install_aur_dependencies() {
 clone_dotfiles() {
     clear
     logo "Downloading dotfiles"
-    repo_url="https://github.com/gh0stzk/dotfiles"
+    repo_url="https://github.com/hcx05/ArchDotfiles"
     repo_dir="$HOME/.local/share/gh0stzk"
     timestamp=$(date +"%Y%m%d-%H%M%S")
     sleep 2
@@ -409,13 +409,13 @@ backup_existing_config() {
     sleep 1
 
     # Dirs in ~/.config/
-    cfg_dir="bspwm alacritty cava clipcat ghostty picom rofi eww sxhkd dunst jgmenu kitty polybar geany gtk-3.0 ncmpcpp yazi zsh mpd mpv paru st zathura"
+    cfg_dir="bspwm alacritty cava clipcat ghostty picom rofi eww sxhkd dunst jgmenu kitty polybar geany gtk-3.0 ncmpcpp yazi zsh mpd mpv paru st zathura fastfetch rice"
     for cfg in $cfg_dir; do
         [ -d "$HOME/.config/$cfg" ] && mv "$HOME/.config/$cfg" "$backup_folder"
     done
 
     # Individual files/dirs in Home
-    for f in ".icons" ".zshrc" ".gtkrc-2.0"; do
+    for f in ".icons" ".zshrc" ".gtkrc-2.0" ".tmux.conf" ".tmux_status.sh"; do
         [ -e "$HOME/$f" ] && mv "$HOME/$f" "$backup_folder"
     done
 
@@ -462,13 +462,13 @@ install_dotfiles() {
     done
 
     # Copy files to ~/.config
-    dots_config_dir="alacritty bspwm cava clipcat dunst geany ghostty gtk-3.0 jgmenu kitty mpd mpv ncmpcpp paru systemd yazi zsh st zathura"
+    dots_config_dir="alacritty bspwm cava clipcat dunst geany ghostty gtk-3.0 jgmenu kitty mpd mpv ncmpcpp paru systemd yazi zsh st zathura fastfetch rice"
     for dots_cfg in $dots_config_dir; do
         cp -R "$HOME/.local/share/gh0stzk/config/$dots_cfg" "$HOME/.config/"
     done
 
     # If ppl wanna try my nvim config
-    [ "$try_nvim" = "y" ] && cp -R "$HOME/.local/share/gh0stzk/config/nvim" "$HOME/.config/"
+    [ "$try_nvim" = "y" ] && cp -R "$HOME/.local/share/gh0stzk/config/nvim-hcx" "$HOME/.config/nvim"
 
     # If ppl wanna try my firefox config
     if [ "$try_firefox" = "y" ]; then
@@ -506,10 +506,20 @@ install_dotfiles() {
 
 
     # Copy remaining files
-    dots_home_dir=".icons .zshrc .gtkrc-2.0"
+    dots_home_dir=".icons .zshrc .gtkrc-2.0 .tmux.conf .tmux_status.sh"
     for dots_home in $dots_home_dir; do
         cp -R "$HOME/.local/share/gh0stzk/home/$dots_home" "$HOME/"
     done
+
+    # tmux: status script must be executable, plugin manager (tpm) + plugins
+    chmod +x "$HOME/.tmux_status.sh" "$HOME/.config/bspwm/bin/ToggleMax" "$HOME/.config/bspwm/bin/toggle-ibus.sh"
+    if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+        git clone --depth=1 https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+    fi
+    "$HOME/.tmux/plugins/tpm/bin/install_plugins" >/dev/null 2>&1 || true
+
+    # fastfetch logo path placeholder -> real home
+    sed -i "s|__HOME__|$HOME|g" "$HOME/.config/fastfetch/config.jsonc"
 
     # Copying polybar-update.hook
     if [ ! -d /etc/pacman.d/hooks ]; then

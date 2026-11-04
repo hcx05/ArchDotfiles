@@ -17,6 +17,12 @@ export PATH="$HOME/.config/bspwm/bin:$PATH"
 export XDG_CURRENT_DESKTOP='bspwm'
 ## Fix java applications
 export _JAVA_AWT_WM_NONREPARENTING=1
+## Input method (ibus + chewing / Zhuyin) -- Super+i toggles
+export GTK_IM_MODULE=ibus
+export QT_IM_MODULE=ibus
+export XMODIFIERS=@im=ibus
+export SDL_IM_MODULE=ibus
+export GLFW_IM_MODULE=ibus
 
 #  ╦ ╦╔═╗╦═╗╦╔═╔═╗╔═╗╔═╗╔═╗╔═╗╔═╗
 #  ║║║║ ║╠╦╝╠╩╗╚═╗╠═╝╠═╣║  ║╣ ╚═╗
@@ -26,6 +32,13 @@ bspc config remove_disabled_monitors true
 bspc config remove_unplugged_monitors true
 bspc config merge_overlapping_monitors true
 MonitorSetup
+
+# VMware guest agent (clipboard copy/paste + drag&drop with the host)
+pgrep -f 'vmtoolsd -n vmusr' >/dev/null || vmware-user-suid-wrapper &
+
+# Force 2560x1440 (disable "Autofit Guest" in VMware or it will resize again)
+VMON=$(xrandr | awk '$2=="connected"{print $1; exit}')
+xrandr --output "$VMON" --mode 2560x1440 --primary --pos 0x0
 
 #  ╔╗ ╔═╗╔═╗╦ ╦╔╦╗  ╔═╗╔═╗╔╗╔╔═╗╦╔═╗
 #  ╠╩╗╚═╗╠═╝║║║║║║  ║  ║ ║║║║╠╣ ║║ ╦
@@ -80,6 +93,16 @@ pidof -q eww || { eww -c "${HOME}"/.config/bspwm/eww daemon & }
 
 # Launch clipboard daemon
 run clipcatd
+
+# Launch input method (Super+i toggles chewing via toggle-ibus.sh)
+pidof -q ibus-daemon || ibus-daemon -drx
+
+# Tap Right Shift = toggle input method (bound to XF86Launch1 in sxhkdrc)
+command -v xcape >/dev/null && { pkill -x xcape; xcape -e 'Shift_R=XF86Launch1'; }
+
+# Clipboard history daemon from the i3 rice (Super+v opens the picker).
+# Self-guards with a flock, so a bspwm reload can't stack daemons.
+python3 "$HOME"/.config/rice/clipboard/clipd.py &
 
 # Launch polkit
 run lxpolkit

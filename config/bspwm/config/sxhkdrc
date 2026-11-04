@@ -21,7 +21,7 @@ super + alt + Return
     OpenApps --floating
 
 # App launcher
-super + @space
+super + d
     OpenApps --menu
 
 # Theme Selector
@@ -35,7 +35,7 @@ super + alt + @space
 # -- BSPWM CONTROL -- #
 
 # Close Window
-super + x
+super + shift + q
     bspc node -c
 
 # Reload BSPWM
@@ -106,13 +106,13 @@ super + ctrl + {Down,j}
 super + ctrl + {Up,k}
 	bspc node -z bottom 0 -40 || bspc node -z top 0 -40
 
-# Increase FLOATING winsdows size
-super + ctrl + plus
-    bspc node -z top_left -50 -25; bspc node -z bottom_right 50 25
+# Toggle maximize / restore for the focused (floating) window
+super + shift + m
+    ToggleMax
 
-# Shrink FLOATING winsdows size
-super + ctrl + minus
-    bspc node -z top_left 50 25; bspc node -z bottom_right -50 -25
+# Minimize (hide) window
+super + shift + minus
+    HideNode --hide
 
 # -- Window/Workspace Navigation -- #
 
@@ -210,7 +210,7 @@ super + y
     OpenApps --yazi
 
 # Neovim
-super + v
+super + shift + v
     OpenApps --nvim
 
 # Ncmpcpp music player
@@ -232,6 +232,18 @@ super + w
     OpenApps --whats
 
 # -- Rofi Applets -- #
+
+# Toggle input method English <-> Chewing (Zhuyin)
+super + i
+    toggle-ibus.sh
+
+# Tap Right Shift (xcape turns a lone tap into XF86Launch1) -> same toggle
+XF86Launch1
+    toggle-ibus.sh
+
+# Clipboard history picker (i3 rice clipmenu: pick = paste into window)
+super + v
+    python3 ~/.config/rice/clipboard/clipmenu.py
 
 # Terminal Selector
 super + alt + t

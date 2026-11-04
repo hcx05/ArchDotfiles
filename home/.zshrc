@@ -110,7 +110,7 @@ function dir_icon {
   fi
 }
 
-PS1='%B%F{blue}%f%b  %B%F{magenta}%n%f%b $(dir_icon)  %B%F{red}%~%f%b${vcs_info_msg_0_} %(?.%B%F{green}.%F{red})%f%b '
+PS1='%B%F{blue}%f%b  %B%(!.%F{red}.%F{magenta})%n%f%b $(dir_icon)  %B%F{red}%~%f%b${vcs_info_msg_0_} %(?.%B%F{green}.%F{red})%f%b '
 
 #  ┌─┐┬  ┬ ┬┌─┐┬┌┐┌┌─┐
 #  ├─┘│  │ ││ ┬││││└─┐
@@ -160,5 +160,33 @@ alias ll='eza --icons=always --color=always -la'
 #  ┌─┐┬ ┬┌┬┐┌─┐  ┌─┐┌┬┐┌─┐┬─┐┌┬┐
 #  ├─┤│ │ │ │ │  └─┐ │ ├─┤├┬┘ │
 #  ┴ ┴└─┘ ┴ └─┘  └─┘ ┴ ┴ ┴┴└─ ┴
-$HOME/.local/bin/colorscript -r
+[[ -x $HOME/.local/bin/colorscript ]] && $HOME/.local/bin/colorscript -r
 #disable-fzf-tab
+
+# fastfetch on startup
+if [[ -o interactive ]] && command -v fastfetch >/dev/null; then
+  if [[ -z $TMUX && $TERM == tmux* ]]; then
+    # sudo su clears $TMUX and kitten icat then fails its image-support
+    # detection; restore $TMUX and force the flags through a PATH shim.
+    _shim="$HOME/.cache/kitten-shim"
+    if [[ ! -x $_shim/kitten ]]; then
+      mkdir -p $_shim
+      printf '%s\n' '#!/bin/sh' 'sub=$1; shift' \
+        '[ "$sub" = icat ] && exec /usr/bin/kitten icat --transfer-mode=stream --passthrough=tmux "$@"' \
+        'exec /usr/bin/kitten "$sub" "$@"' > $_shim/kitten
+      chmod +x $_shim/kitten
+    fi
+    TMUX="/tmp/tmux-1000/default,$(pgrep -u 1000 -x tmux | head -1),0" PATH="$_shim:$PATH" fastfetch
+    unset _shim
+  else
+    fastfetch
+  fi
+fi
+
+# Ctrl+Left / Ctrl+Right: move by word
+bindkey '^[[1;5C' forward-word
+bindkey '^[[1;5D' backward-word
+bindkey '^[[5C' forward-word
+bindkey '^[[5D' backward-word
+
+alias vim='nvim'
