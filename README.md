@@ -106,7 +106,7 @@ In addition, each theme can be configured independently — either by manually e
 
 If you have multiple monitors, BSPWM will automatically detect and configure up to 4 displays when launching with my dotfiles.
 
-If you connect an additional monitor while the session is already running, simply reload BSPWM using the `Super + Alt + r` key combination, and your monitors will be configured instantly.
+If you connect an additional monitor while the session is already running, simply reload BSPWM using the `Super + Shift + r` key combination, and your monitors will be configured instantly.
 
 You can check the Wiki [👉 Monitors Setup](https://github.com/gh0stzk/dotfiles/wiki/Monitors-setup) if you want to edit the default layouts.
 

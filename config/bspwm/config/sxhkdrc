@@ -17,7 +17,7 @@ super + Return
     OpenApps --terminal
 
 # Open Terminal (Floating)
-super + alt + Return
+super + shift + Return
     OpenApps --floating
 
 # App launcher
@@ -29,7 +29,7 @@ alt + @space
     RiceSelector
 
 # Bar Selector
-super + alt + @space
+super + shift + @space
     BarSelector
 
 # -- BSPWM CONTROL -- #
@@ -39,7 +39,7 @@ super + shift + q
     bspc node -c
 
 # Reload BSPWM
-super + alt + r
+super + shift + r
     bspc wm -r
 
 # Reload sxhkd Keybinds
@@ -250,7 +250,7 @@ super + alt + t
     Term --selecterm
 
 # Wallpaper selector
-super + alt + w
+super + shift + w
     WallSelect
 
 # Mount Android phones
@@ -258,31 +258,31 @@ super + alt + a
     OpenApps --android
 
 # Network Manager
-super + alt + n
+super + shift + n
     OpenApps --netmanager
 
 # Bluetooth
-super + alt + b
+super + shift + b
     OpenApps --bluetooth
 
 # Clipboard
-super + alt + c
+super + shift + c
     OpenApps --clipboard
 
 # Screenshot
-super + alt + s
+super + shift + s
     OpenApps --screenshot
 
 # PowerMenu
-super + alt + p
+super + shift + p
     OpenApps --powermenu
 
 # Rofi style
-super + alt + l
+super + shift + l
     RofiLauncher --choose-style
 
 # Keyboard Layout Applet
-super + alt + k
+super + shift + k
     OpenApps --keyboard
 
 # RofiPass applet
@@ -292,7 +292,7 @@ super + alt + x
 # -- Environment Apps -- #
 
 # Scratchpad
-super + alt + o
+super + shift + o
     OpenApps --scratch
 
 # jgmenu
@@ -315,11 +315,11 @@ ctrl + super + alt + l
     ScreenLocker
 
 # Hide Bar (Polybar and/or eww)
-super + alt + h
+super + shift + h
     HideBar -h
 
 # Unhide Bar (Polybar and/or eww)
-super + alt + u
+super + shift + u
     HideBar -u
 
 # Increase transparency on focused window
