@@ -63,7 +63,7 @@ LIST=$(awk -v accent="${ACCENT:-#7aa2f7}" -v lang="$LANG_NOW" -v i18n="$I18N" '
     /^#[[:space:]]*--[[:space:]]+.+[[:space:]]+-- #[[:space:]]*$/ {
         sub(/^#[[:space:]]*--[[:space:]]+/, "")
         sub(/[[:space:]]+-- #[[:space:]]*$/, "")
-        printf "<span size=\"large\" weight=\"bold\" foreground=\"%s\">── %s ──</span>\n", accent, xmlesc(tl($0))
+        printf "<span size=\"110%%\" weight=\"bold\" foreground=\"%s\">── %s ──</span>\n", accent, xmlesc(tl($0))
         last = ""
         next
     }
