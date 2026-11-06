@@ -193,5 +193,5 @@ alias vim='nvim'
 
 export PATH="$HOME/.local/share/gem/ruby/3.4.0/bin:$PATH"
 
-alias floating-desktop="bspc desktop -f floating"
-alias tiled-desktop="bspc desktop -f tiled"
+alias floating-desktop="bspc query -N -d -n .window | while read n; do bspc node \"\$n\" -t floating; done"
+alias tiled-desktop="bspc query -N -d -n .window | while read n; do bspc node \"\$n\" -t tiled; done"
