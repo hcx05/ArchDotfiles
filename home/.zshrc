@@ -192,3 +192,6 @@ bindkey '^[[5D' backward-word
 alias vim='nvim'
 
 export PATH="$HOME/.local/share/gem/ruby/3.4.0/bin:$PATH"
+
+alias floating-desktop="bspc desktop -f floating"
+alias tiled-desktop="bspc desktop -f tiled"
