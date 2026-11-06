@@ -1,0 +1,87 @@
+Basic	基本操作
+Show help	顯示說明
+Open Terminal (Normal)	開啟終端機（一般）
+Open Terminal (Floating)	開啟終端機（浮動）
+App launcher	應用程式啟動器
+Theme Selector	主題選擇器
+Bar Selector	狀態列選擇器
+BSPWM CONTROL	BSPWM 控制
+Close Window	關閉視窗
+Reload BSPWM	重新載入 BSPWM
+Reload sxhkd Keybinds	重新載入快捷鍵設定
+Log out BSPWM session	登出 BSPWM 工作階段
+Soft reload, mostly reload only daemons.	軟重載（僅重啟常駐程式）
+Window states and flags	視窗狀態與屬性
+Kill Window	強制關閉視窗
+Set Window State: Tiled Mode	視窗狀態：切塊模式
+Set Window State: Floating Mode	視窗狀態：浮動模式
+Set Window State: Fullscreen Mode	視窗狀態：全螢幕模式
+Hide window	隱藏視窗
+Show menu to restore hidden windows	顯示選單以還原隱藏視窗
+Move/Resize Windows	移動／調整視窗大小
+Rotate desktop 90º	旋轉工作區 90 度
+Resize All Windows Equally	平均調整所有視窗大小
+Resize: shrink width (falls back to the opposite edge at screen borders)	調整大小：縮小寬度（靠邊時改另一側）
+Resize: expand width	調整大小：擴大寬度
+Resize: expand height	調整大小：擴大高度
+Resize: shrink height	調整大小：縮小高度
+Toggle maximize / restore for the focused (floating) window	切換聚焦浮動視窗最大化／還原
+Minimize (hide) window	最小化（隱藏）視窗
+Window/Workspace Navigation	視窗／工作區導覽
+Switch workspace	切換工作區
+Move to a specific workspace	前往指定工作區
+Send a window to a specific workspace	將視窗送至指定工作區
+Send focused window to workspace directionally	依方向將聚焦視窗送至工作區
+Change focus to Left window	聚焦切換至左側視窗
+Change focus to window Below	聚焦切換至下方視窗
+Change focus to window Above	聚焦切換至上方視窗
+Change focus to Right window	聚焦切換至右側視窗
+Focus the last Window	聚焦上一個視窗
+Focus the last Desktop	聚焦上一個工作區
+Swap Focused Window with Left Window	與左側視窗交換位置
+Swap Focused Window with Window Below	與下方視窗交換位置
+Swap Focused Window with Window Above	與上方視窗交換位置
+Swap Focused Window with Right Window	與右側視窗交換位置
+Window switcher	視窗切換器
+Basic Apps	常用應用程式
+Browser	瀏覽器
+Editor	編輯器
+File Manager	檔案管理器
+RiceEditor	RiceEditor（佈景編輯器）
+Terminal apps	終端機應用程式
+Yazi	Yazi（檔案管理器）
+Neovim	Neovim
+Ncmpcpp music player	Ncmpcpp 音樂播放器
+Other apps	其他應用程式
+Pavucontrol	Pavucontrol（音量控制）
+Telegram	Telegram
+Whatsapp	WhatsApp
+Rofi Applets	Rofi 小工具
+Toggle input method English <-> Chewing (Zhuyin)	切換輸入法 英文／注音
+Tap Right Shift (xcape turns a lone tap into XF86Launch1) -> same toggle	輕按右 Shift（同切換輸入法）
+Clipboard history picker (i3 rice clipmenu: pick = paste into window)	剪貼簿歷史選擇器
+Terminal Selector	終端機選擇器
+Wallpaper selector	桌布選擇器
+Mount Android phones	掛載 Android 手機
+Network Manager	網路管理器
+Bluetooth	藍牙
+Clipboard	剪貼簿
+Screenshot	截圖
+PowerMenu	電源選單
+Rofi style	Rofi 樣式
+Keyboard Layout Applet	鍵盤佈局小工具
+RofiPass applet	RofiPass 密碼小工具
+Environment Apps	環境應用程式
+Scratchpad	暫存視窗（Scratchpad）
+jgmenu	jgmenu（右鍵選單）
+Power off system	關閉系統電源
+Reboot system	重新啟動系統
+Lockscreen	鎖定螢幕
+Hide Bar (Polybar and/or eww)	隱藏狀態列（Polybar／eww）
+Unhide Bar (Polybar and/or eww)	顯示狀態列（Polybar／eww）
+Increase transparency on focused window	增加聚焦視窗透明度
+Decrease transparency on focused window	降低聚焦視窗透明度
+Reset transparency on focused window	重設聚焦視窗透明度
+Manage brightness	調整螢幕亮度
+Volume control	音量控制
+Music Control	音樂播放控制
