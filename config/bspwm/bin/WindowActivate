@@ -1,0 +1,17 @@
+#!/bin/sh
+# WindowActivate WID
+# Used by the alt+Tab switcher (rofi -window-command). bspwm ignores EWMH
+# activation of hidden (minimized) nodes, so restore them first, then focus.
+# WID may be decimal or 0x-hex (rofi passes whichever it likes).
+
+[ -n "$1" ] || exit 1
+wid=$(printf '0x%08X' "$(($1))")
+
+if [ -n "$(bspc query -N -n "$wid.hidden" 2>/dev/null)" ]; then
+    HideNode --restore "$wid"
+    # layout change can make focus_follows_pointer steal focus back; refocus once it settles
+    sleep 0.15
+    bspc node "$wid" -f
+else
+    xdotool windowactivate "$(($1))"
+fi

@@ -81,5 +81,6 @@ menu() {
 case "$1" in
     --hide) hide "$2" ;;
     --menu) menu ;;
+    --restore) restore "$2" ;;
     *)  echo "Uso: $0 --minimize [WID] | --menu"; exit 1 ;;
 esac

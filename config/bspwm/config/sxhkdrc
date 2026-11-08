@@ -110,7 +110,7 @@ super + ctrl + {Up,k}
 super + shift + m
     ToggleMax
 
-# Minimize (hide) window
+# Minimize window (stays in alt+Tab; picking it there restores it)
 super + shift + minus
     HideNode --hide
 
@@ -178,12 +178,7 @@ super + shift + Right
 
 # Window switcher
 alt + Tab
-    rofi \
-        -theme $HOME/.config/bspwm/config/rofi-themes/Windows.rasi \
-        -show window -window-thumbnail \
-        -window-hide-active-window true \
-        -kb-accept-entry "!Alt-Tab,Return" \
-        -kb-element-next "Alt-Tab"
+    WindowSwitcher
 
 # -- Basic Apps -- #
 

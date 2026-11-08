@@ -1,0 +1,12 @@
+#!/bin/sh
+# alt+Tab window switcher. Lives in a script (not sxhkdrc) because sxhkd
+# treats "{window}" as its own brace expansion and would eat it.
+# Picking a minimized (hidden) window restores it via WindowActivate.
+exec rofi \
+    -theme "$HOME/.config/bspwm/config/rofi-themes/Windows.rasi" \
+    -show window -window-thumbnail \
+    -window-hide-active-window true \
+    -kb-accept-entry "KP_Enter" \
+    -kb-accept-alt "!Alt-Tab,Return" \
+    -window-command "WindowActivate {window}" \
+    -kb-element-next "Alt-Tab"
