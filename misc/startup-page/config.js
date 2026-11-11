@@ -11,11 +11,11 @@ const CONFIG = {
 	// └─┘┴ ┴└─┘┴└─┘└─┘
 
 	// General
-	name: 'gh0stzk',
+	name: 'arch',
 	imageBackground: false,
 	openInNewTab: true,
 	twelveHourFormat: true,
-	timeZone: 'America/Mexico_City',
+	timeZone: 'Asia/Taipei',
 
 	// Greetings
 	greetingMorning: 'Good morning!',
@@ -32,9 +32,9 @@ const CONFIG = {
 	weatherUnit: 'C', // 'F', 'C'
 	language: 'en', // More languages in https://openweathermap.org/current#multi
 
-	trackLocation: true, // If false or an error occurs, the app will use the lat/lon below
-	defaultLatitude: '19.593',
-	defaultLongitude: '-99.250',
+	trackLocation: false, // Use Taipei coordinates directly (avoids geolocation block & VPN IP mismatch)
+	defaultLatitude: '25.0330',
+	defaultLongitude: '121.5654',
 
 	// Autochange
 	autoChangeTheme: false,
@@ -140,20 +140,20 @@ const CONFIG = {
 			id: '1',
 			links: [
 				{
-					name: 'gh0stzk dotfiles',
-					link: 'https://github.com/gh0stzk/dotfiles',
+					name: 'GitHub',
+					link: 'https://github.com/',
 				},
 				{
-					name: 'Arch Linux',
-					link: 'https://archlinux.org/',
+					name: 'Gemini',
+					link: 'https://gemini.google.com/',
 				},
 				{
 					name: 'ChatGPT',
-					link: 'https://chat.openai.com/',
+					link: 'https://chatgpt.com/',
 				},
 				{
-					name: 'MonkeyType',
-					link: 'https://monkeytype.com/',
+					name: 'Claude',
+					link: 'https://claude.ai/',
 				},
 			],
 		},
@@ -162,20 +162,20 @@ const CONFIG = {
 			id: '2',
 			links: [
 				{
-					name: 'Youtube',
-					link: 'https://www.youtube.com',
+					name: 'YouTube',
+					link: 'https://www.youtube.com/',
 				},
 				{
-					name: 'Netflix',
-					link: 'https://www.netflix.com',
+					name: 'Instagram',
+					link: 'https://www.instagram.com/',
 				},
 				{
-					name: 'Twitch',
-					link: 'https://www.twitch.tv',
+					name: 'X',
+					link: 'https://x.com/home',
 				},
 				{
-					name: 'Prime Video',
-					link: 'https://www.primevideo.com',
+					name: 'Telegram',
+					link: 'https://web.telegram.org/',
 				},
 			],
 		},
@@ -184,24 +184,24 @@ const CONFIG = {
 	// Second Links Container
 	secondListsContainer: [
 		{
-			icon: 'square-user-round',
+			icon: 'shield',
 			id: '1',
 			links: [
 				{
-					name: 'Spotify',
-					link: 'https://www.spotify.com',
+					name: 'HTB Academy',
+					link: 'https://academy.hackthebox.com/',
 				},
 				{
-					name: 'r/Unixporn',
-					link: 'https://www.reddit.com/r/unixporn',
+					name: 'TryHackMe',
+					link: 'https://tryhackme.com/',
 				},
 				{
-					name: 'Facebook',
-					link: 'https://www.facebook.com',
+					name: 'pwn.college',
+					link: 'https://pwn.college/',
 				},
 				{
-					name: 'X',
-					link: 'https://x.com/home',
+					name: 'The Hacker Recipes',
+					link: 'https://www.thehacker.recipes/',
 				},
 			],
 		},
@@ -210,20 +210,20 @@ const CONFIG = {
 			id: '2',
 			links: [
 				{
-					name: 'r/Programming',
-					link: 'https://www.reddit.com/r/programming/',
+					name: 'GeeksforGeeks',
+					link: 'https://www.geeksforgeeks.org/',
 				},
 				{
-					name: 'r/Rust',
-					link: 'https://www.reddit.com/r/rust/',
+					name: 'Coddy.tech',
+					link: 'https://coddy.tech/',
 				},
 				{
-					name: 'r/GoLang',
-					link: 'https://www.reddit.com/r/golang/',
+					name: 'MonkeyType',
+					link: 'https://monkeytype.com/',
 				},
 				{
-					name: 'r/Python',
-					link: 'https://www.reddit.com/r/Python/',
+					name: 'arXiv',
+					link: 'https://arxiv.org/',
 				},
 			],
 		},

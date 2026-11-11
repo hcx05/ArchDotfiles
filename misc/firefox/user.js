@@ -197,4 +197,4 @@ user_pref("general.smoothScroll.msdPhysics.enabled", false); // [FF122+ Nightly]
 /* set startup page
  * 0=blank, 1=home, 2=last visited page, 3=resume previous session*/
 user_pref("browser.startup.page", 1);
-user_pref("browser.startup.homepage", "file:///home/z0mbi3/.local/share/startup-page/index.html");
+user_pref("browser.startup.homepage", "file:///home/arch/.local/share/startup-page/index.html");

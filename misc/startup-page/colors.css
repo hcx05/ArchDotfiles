@@ -1,43 +1,37 @@
-/** Style and colors generated for the emilia theme. **/
+/** Style and colors generated for the z0mbi3 theme. **/
 
 :root {
   /* Font Size */
-  --fg-primary: 12vh; /* Time and Greetings */
-  --fg-secondary: 3vh; /* Greetings and Weather widger */
-  --fg-date: 8vh; /* Date */
-  --fg-list: 2vh; /* Links List */
-  --icon: 3vh; /* Icon Size */
+  --fg-primary: 12vh;
+  --fg-secondary: 3vh;
+  --fg-date: 8vh;
+  --fg-list: 2vh;
+  --icon: 3vh;
 
-  /* Fonts Color */
-  --fg: #c0caf5; /* Foreground color */
-  --sfg: #1a1b26; /* Sceondary Foreground color */
+  --fg: #a5b6cf;
+  --sfg: #0d0f18;
 
-  /* Light Colors  */
-  --accent: #bb9af7; /* Hover color */
-  --background: #1a1b26; /* Background color */
-  --cards: #222330; /* Cards color */
+  --accent: #c296eb;
+  --background: #0d0f18;
+  --cards: #131621;
 
-  /* Image background  */
-  --imgbg: url(assets/background.jpg); /* Image URL */
+  --imgbg: url(assets/background.jpg);
   --imgcol: linear-gradient(
     rgba(255, 255, 255, 0.7),
     rgba(255, 255, 255, 0.7)
-  ); /* Filter color */
+  );
 }
 
 .darktheme {
-  /* Dark Colors  */
-  --accent: #bb9af7; /* Hover color */
-  --background: #1a1b26; /* Background color */
-  --cards: #222330; /* Cards color */
+  --accent: #c296eb;
+  --background: #0d0f18;
+  --cards: #131621;
 
-  /* Fonts Color */
-  --fg: #c0caf5; /* Foreground color */
-  --sfg: #1a1b26; /* Secondary Foreground color */
+  --fg: #a5b6cf;
+  --sfg: #0d0f18;
 
-  /* Image background  */
   --imgcol: linear-gradient(
     rgba(0, 0, 0, 0.85),
     rgba(0, 0, 0, 0.85)
-  ); /* Filter color */
+  );
 }

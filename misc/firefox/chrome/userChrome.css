@@ -24,7 +24,8 @@
     --tab-border-radius: 0 !important;
     --lwt-toolbarbutton-icon-fill-attention: var(--z0mbi3-magenta) !important;
     --toolbarbutton-icon-fill-attention: var(--lwt-toolbarbutton-icon-fill-attention) !important;
-    --toolbar-field-focus-background-color: var(--z0mbi3-bg) !important;
+    --toolbar-field-background-color: color-mix(in srgb, var(--z0mbi3-fg) 10%, var(--z0mbi3-bg)) !important;
+    --toolbar-field-focus-background-color: color-mix(in srgb, var(--z0mbi3-fg) 14%, var(--z0mbi3-bg)) !important;
     --panel-border-color: transparent !important;
 }
 
@@ -190,15 +191,30 @@ tab-split-view-wrapper .tabbrowser-tab {
 /*     URL Bar     */
 /*-----------------*/
 
-.urlbar-background {
-    background-color: var(--z0mbi3-bg) !important;
-    border: none !important;
+#urlbar-background,
+.urlbar-background,
+#searchbar {
+    background-color: color-mix(in srgb, var(--z0mbi3-fg) 10%, var(--z0mbi3-bg)) !important;
+    border: 1px solid color-mix(in srgb, var(--z0mbi3-fg) 20%, transparent) !important;
+    border-radius: 6px !important;
     outline: none !important;
+    box-shadow: none !important;
     opacity: 1 !important;
 }
 
-#urlbar[focused] .urlbar-background {
-    outline: 1px solid var(--z0mbi3-accent-color-inactive) !important;
+#urlbar:hover #urlbar-background,
+#urlbar:hover .urlbar-background {
+    background-color: color-mix(in srgb, var(--z0mbi3-fg) 13%, var(--z0mbi3-bg)) !important;
+    border-color: color-mix(in srgb, var(--z0mbi3-fg) 32%, transparent) !important;
+}
+
+#urlbar[focused] #urlbar-background,
+#urlbar[focused] .urlbar-background,
+#urlbar[open] #urlbar-background,
+#urlbar[open] .urlbar-background {
+    background-color: color-mix(in srgb, var(--z0mbi3-fg) 14%, var(--z0mbi3-bg)) !important;
+    border: 1px solid var(--z0mbi3-accent-color) !important;
+    outline: none !important;
 }
 
 #urlbar-input {
