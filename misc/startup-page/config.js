@@ -11,7 +11,7 @@ const CONFIG = {
 	// └─┘┴ ┴└─┘┴└─┘└─┘
 
 	// General
-	name: 'arch',
+	name: 'hcx',
 	imageBackground: false,
 	openInNewTab: true,
 	twelveHourFormat: true,
