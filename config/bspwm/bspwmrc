@@ -124,7 +124,9 @@ python3 "$HOME"/.config/rice/clipboard/clipd.py &
 # Launch polkit
 run lxpolkit
 
-# The event to make Layouts work with polybar
+# The event to make Layouts work with polybar. A bspwm restart keeps the old
+# subscriber alive: end it first, or every restart stacks another loop.
+pkill -fx "bspc subscribe desktop_focus monitor_focus"
 bspc subscribe desktop_focus monitor_focus | while read -r _; do
     polybar-msg action "#layout.hook.0" >/dev/null 2>&1
 done &
