@@ -33,13 +33,27 @@ bspc config remove_unplugged_monitors true
 bspc config merge_overlapping_monitors true
 MonitorSetup
 
+#  ╔╦╗╦╔═╗╔═╗╦  ╔═╗╦ ╦  ╔═╗╔═╗╔═╗╦  ╔═╗
+#   ║║║╚═╗╠═╝║  ╠═╣╚╦╝  ╚═╗║  ╠═╣║  ║╣
+#  ═╩╝╩╚═╝╩  ╩═╝╩ ╩ ╩   ╚═╝╚═╝╩ ╩╩═╝╚═╝
+
+# One scale factor for the whole rice, derived from the screen that is
+# actually there (see ~/.config/rice/scale/autoscale + scale.conf). Detect it
+# now -- after MonitorSetup picked the mode, before anything is sized -- and
+# publish it: Xft.dpi for every toolkit's text, RICE_SCALE / scale_px for the
+# pixel sizes below, in the theme modules, and in the polybar / rofi / eww
+# shims in ~/.config/bspwm/bin.
+# --no-hook: the hook restarts bspwm, i.e. runs this very file.
+"$HOME"/.config/rice/scale/autoscale apply --no-hook
+. "$HOME"/.config/rice/scale/scale-lib.sh
+
 #  ╔╗ ╔═╗╔═╗╦ ╦╔╦╗  ╔═╗╔═╗╔╗╔╔═╗╦╔═╗
 #  ╠╩╗╚═╗╠═╝║║║║║║  ║  ║ ║║║║╠╣ ║║ ╦
 #  ╚═╝╚═╝╩  ╚╩╝╩ ╩  ╚═╝╚═╝╝╚╝╚  ╩╚═╝
 
 bspc config external_rules_command "${HOME}"/.config/bspwm/bin/ExternalRules
 
-bspc config window_gap                5
+bspc config window_gap                "$(scale_px 5)"
 bspc config split_ratio               0.51
 bspc config single_monocle            true
 
@@ -74,6 +88,12 @@ run sxhkd -c "${HOME}"/.config/bspwm/config/sxhkdrc
 
 # Load current theme
 "${HOME}"/.config/bspwm/bin/Theme.sh
+
+# Keep following the screen: when the VM window is resized the guest gets a
+# new preferred mode (nothing applies that under a bare WM -- the watcher
+# does) and the scale is re-derived; on a change it restarts bspwm so this
+# file re-applies every size. Single instance: a restart cannot stack them.
+"$HOME"/.config/rice/scale/autoscale watch &
 
 # Launch picom
 run picom --config "${HOME}"/.config/bspwm/config/picom/picom.conf

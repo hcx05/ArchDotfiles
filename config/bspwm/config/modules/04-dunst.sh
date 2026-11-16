@@ -4,6 +4,10 @@ _write "$HOME/.config/dunst/dunstrc.d/theme.conf" << EOF
 # Style and colors generated for the ${RICE} theme.
 
 [global]
+# Display scale (~/.config/rice/scale): dunst multiplies all of its own
+# geometry by this -- sizes in dunstrc and the offset / radius / frame below
+# stay design sizes. Its font follows Xft.dpi.
+scale = ${RICE_SCALE}
 origin = ${dunst_origin}
 offset = ${dunst_offset}
 

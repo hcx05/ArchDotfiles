@@ -1,0 +1,7 @@
+#!/bin/sh
+# Display-scale shim. ~/.config/bspwm/bin is first in the session's PATH, so
+# this runs instead of the real program -- and hands it a copy of its config
+# whose pixel sizes are multiplied by the scale `autoscale` detected for the
+# current screen (at scale 1: the untouched originals). The originals in
+# ~/.config/bspwm stay what you edit. See ~/.config/rice/scale/scaled.
+exec "$HOME/.config/rice/scale/scaled" "$0" "$@"

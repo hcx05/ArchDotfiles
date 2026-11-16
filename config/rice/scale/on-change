@@ -1,0 +1,20 @@
+#!/bin/sh
+# ============================================================================
+# autoscale hook for the bspwm rice -- run by ./autoscale (the watcher) after
+# the screen changed, with the new scale already published (state + Xft.dpi):
+#
+#   on-change scale  <old> <new>   the display scale changed
+#   on-change resize <old> <new>   same scale, different resolution
+#
+# scale:  restart bspwm in place. bspwmrc is where every size gets applied
+#         -- window gap, then Theme.sh and its modules (borders, paddings,
+#         picom, xsettingsd -> GTK/Qt, dunst) and the bar, which like rofi
+#         and eww comes up through the shims in ~/.config/bspwm/bin with its
+#         sizes multiplied by the new scale. Windows stay where they are.
+# resize: nothing changes size, but the bar has to span the new screen and
+#         the wallpaper has to be re-fitted: Theme.sh does exactly that.
+# ============================================================================
+case "${1:-scale}" in
+    scale) bspc wm -r ;;
+    *) "$HOME"/.config/bspwm/bin/Theme.sh ;;
+esac

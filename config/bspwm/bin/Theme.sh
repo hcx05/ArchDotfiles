@@ -19,6 +19,9 @@
 read -r RICE < "$HOME"/.config/bspwm/.rice
 # Load theme configuration
 . "$HOME"/.config/bspwm/rices/"$RICE"/theme-config.bash
+# Display scale of the current screen: RICE_SCALE / RICE_DPI and scale_px,
+# for the modules that set a pixel size (borders, paddings, picom, xsettings).
+. "$HOME"/.config/rice/scale/scale-lib.sh
 # Path to modules dir
 MODULE_DIR="$HOME/.config/bspwm/config/modules"
 

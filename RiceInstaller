@@ -160,7 +160,7 @@ install_dependencies() {
     sleep 2
 
     sudo pacman -Syy
-    dependencies="alacritty base-devel bat bc brightnessctl bspwm clipcat dunst eza feh fzf thunar tumbler gvfs-mtp firefox geany git imagemagick jq jgmenu kitty libwebp maim mpc mpd mpv neovim xcolor ncmpcpp npm pamixer pacman-contrib papirus-icon-theme picom playerctl polybar lxsession python-gobject redshift rofi rustup sxhkd xclip xdg-user-dirs xdo xdotool xsettingsd xorg-xdpyinfo xorg-xkill xorg-xprop xorg-xrandr xorg-xsetroot xorg-xwininfo xorg-xrdb yazi zsh zsh-autosuggestions zsh-history-substring-search zsh-syntax-highlighting ttf-inconsolata tmux xcape fastfetch ibus ibus-chewing ttf-jetbrains-mono ttf-jetbrains-mono-nerd ttf-terminus-nerd ttf-ubuntu-mono-nerd webp-pixbuf-loader"
+    dependencies="alacritty base-devel bat bc brightnessctl bspwm clipcat dunst eza feh fzf thunar tumbler gvfs-mtp firefox geany git imagemagick jq jgmenu kitty libwebp maim mpc mpd mpv neovim xcolor ncmpcpp npm pamixer pacman-contrib papirus-icon-theme picom playerctl polybar lxsession python-gobject redshift rofi rustup sxhkd xclip xdg-user-dirs xdo xdotool xsettingsd xorg-xdpyinfo xorg-xkill xorg-xprop xorg-xrandr xorg-xev xorg-xsetroot xorg-xwininfo xorg-xrdb yazi zsh zsh-autosuggestions zsh-history-substring-search zsh-syntax-highlighting ttf-inconsolata tmux xcape fastfetch ibus ibus-chewing ttf-jetbrains-mono ttf-jetbrains-mono-nerd ttf-terminus-nerd ttf-ubuntu-mono-nerd webp-pixbuf-loader"
 
     # Arrays temporales
     failed_deps=""
@@ -512,7 +512,10 @@ install_dotfiles() {
     done
 
     # tmux: status script must be executable, plugin manager (tpm) + plugins
-    chmod +x "$HOME/.tmux_status.sh" "$HOME/.config/bspwm/bin/ToggleMax" "$HOME/.config/bspwm/bin/toggle-ibus.sh"
+    chmod +x "$HOME/.tmux_status.sh" "$HOME/.config/bspwm/bin/ToggleMax" "$HOME/.config/bspwm/bin/toggle-ibus.sh" \
+        "$HOME/.config/bspwm/bin/polybar" "$HOME/.config/bspwm/bin/rofi" "$HOME/.config/bspwm/bin/eww" \
+        "$HOME/.config/rice/scale/autoscale" "$HOME/.config/rice/scale/scaled" \
+        "$HOME/.config/rice/scale/scale-conf" "$HOME/.config/rice/scale/on-change"
     if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
         git clone --depth=1 https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
     fi

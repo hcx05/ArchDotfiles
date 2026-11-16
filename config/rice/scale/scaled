@@ -1,0 +1,174 @@
+#!/usr/bin/env bash
+# ============================================================================
+# scaled -- run a program on a copy of its config whose pixel sizes follow
+# the display scale. Called by the shims in ~/.config/bspwm/bin (polybar,
+# rofi, eww): that directory is first in the session's PATH, so every script
+# and keybinding that runs "polybar ..." / "rofi ..." / "eww ..." lands here
+# without having been edited.
+#
+#   scaled <path of the shim> [the program's own arguments ...]
+#
+# What it does:
+#   scale = 1    nothing at all -- exec the real program with its arguments.
+#   otherwise    find the config the arguments name (polybar -c FILE, rofi
+#                -theme FILE, eww -c DIR), build a mirror of it
+#                under ~/.cache/rice/scaled/ in which every pixel size is
+#                "design size x scale" (./scale-conf does the rewriting),
+#                and run the real program on the mirror instead.
+#
+# The originals are never modified and stay the single place to edit. A
+# mirror is rebuilt when the scale changes or any original is newer than it,
+# so an edited theme, a switched rice, or a file a script regenerates is
+# picked up on the next launch. Everything that is not a size (scripts,
+# images, colors files) is linked, not copied.
+# ============================================================================
+set -u
+
+SCALE_DIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+shim=${1:?usage: scaled <shim path> [args...]}
+shift
+tool=${shim##*/}
+shim_dir=$(cd "$(dirname "$shim")" 2>/dev/null && pwd -P)
+
+# The real program: first one in PATH that is not the shim itself.
+real=""
+IFS=: read -ra path_dirs <<<"$PATH"
+for d in "${path_dirs[@]}"; do
+    [ -n "$d" ] && [ -x "$d/$tool" ] && [ ! -d "$d/$tool" ] || continue
+    [ "$(cd "$d" 2>/dev/null && pwd -P)" = "$shim_dir" ] && continue
+    real="$d/$tool"
+    break
+done
+[ -n "$real" ] || { echo "scaled: '$tool' is not installed" >&2; exit 127; }
+
+# shellcheck source=scale-lib.sh
+. "$SCALE_DIR/scale-lib.sh"
+[ "$RICE_SCALE" = 1 ] && exec "$real" "$@"
+
+MIRROR_ROOT="${XDG_CACHE_HOME:-$HOME/.cache}/rice/scaled"
+STAMP=".scale-stamp"
+# convert KIND [SRC_DIR MIRROR_DIR] < original > scaled
+convert() { local kind=$1; shift; "$SCALE_DIR/scale-conf" "$kind" "$RICE_SCALE" "$RICE_DPI" "$@"; }
+
+abs_dir() { (cd "$1" 2>/dev/null && pwd -P); }
+
+# A mirror is current if it was built for this scale and nothing it was built
+# from (the originals, the converter) changed since.
+fresh() {   # mirror_dir source_dir
+    local stamp="$1/$STAMP"
+    [ -f "$stamp" ] && [ "$(cat "$stamp")" = "$RICE_SCALE $RICE_DPI" ] || return 1
+    [ "$SCALE_DIR/scale-conf" -nt "$stamp" ] && return 1
+    [ -z "$(find -L "$2" -newer "$stamp" -print -quit 2>/dev/null)" ]
+}
+stamp() { printf '%s\n' "$RICE_SCALE $RICE_DPI" > "$1/$STAMP"; }
+
+# Several copies start at once (one polybar per monitor): build one at a time.
+lock() { mkdir -p "$MIRROR_ROOT" && exec 9>"$MIRROR_ROOT/.lock" && flock 9; }
+unlock() { exec 9>&-; }
+
+# Flat directory of same-kind files (a bar's *.ini, the rofi themes' *.rasi).
+mirror_flat() {   # kind glob source_file -> prints the mirrored file
+    local kind=$1 glob=$2 file=$3 src mir f
+    src=$(abs_dir "$(dirname "$file")") || { printf '%s\n' "$file"; return; }
+    mir="$MIRROR_ROOT$src"
+    lock
+    if ! fresh "$mir" "$src"; then
+        mkdir -p "$mir"
+        for f in "$src"/$glob; do
+            [ -f "$f" ] && convert "$kind" "$src" "$mir" < "$f" > "$mir/${f##*/}"
+        done
+        stamp "$mir"
+    fi
+    unlock
+    printf '%s\n' "$mir/${file##*/}"
+}
+
+# A whole eww config tree: .scss / .yuck are converted, the rest (scripts,
+# images) is linked. "../something" a stylesheet pulls in from outside the
+# tree (the generated bars/colors.scss) is linked at the same relative place.
+mirror_eww() {   # source_dir -> prints the mirrored dir
+    local src mir rel ref target
+    src=$(abs_dir "$1") || { printf '%s\n' "$1"; return; }
+    mir="$MIRROR_ROOT$src"
+    lock
+    if ! fresh "$mir" "$src"; then
+        # rebuilt in place (no rm): a running eww daemon watches this tree
+        mkdir -p "$mir"
+        (cd "$src" && find -L . -type d) | while IFS= read -r rel; do mkdir -p "$mir/$rel"; done
+        (cd "$src" && find -L . -type f) | while IFS= read -r rel; do
+            case "$rel" in
+                *.scss) convert css < "$src/$rel" > "$mir/$rel" ;;
+                *.yuck) convert yuck < "$src/$rel" > "$mir/$rel" ;;
+                *) ln -sfn "$src/$rel" "$mir/$rel"; continue ;;
+            esac
+            grep -oE "[\"'](\.\./)+[^\"']+[\"']" "$src/$rel" 2>/dev/null | tr -d "\"'" | while IFS= read -r ref; do
+                target="$(dirname "$src/$rel")/$ref"
+                [ -e "$target" ] || continue
+                mkdir -p "$(dirname "$mir/$rel")/$(dirname "$ref")"
+                ln -sfn "$(readlink -f "$target")" "$(dirname "$mir/$rel")/$ref"
+            done
+        done
+        stamp "$mir"
+    fi
+    unlock
+    printf '%s\n' "$mir"
+}
+
+# rofi accepts a path or a bare theme name; only a file we can find is mirrored.
+# A -theme-str override is passed through untouched: its numbers are computed
+# by the calling script for the screen at hand (BarSelector sizes its window
+# from the monitor and the DPI itself) -- scaling them again would be wrong.
+rofi_theme_file() {
+    local v=${1/#\~/$HOME} d
+    [ -f "$v" ] && { printf '%s\n' "$v"; return 0; }
+    case "$v" in */*) return 1 ;; esac
+    for d in "${XDG_CONFIG_HOME:-$HOME/.config}/rofi/themes" "${XDG_CONFIG_HOME:-$HOME/.config}/rofi" \
+        "${XDG_DATA_HOME:-$HOME/.local/share}/rofi/themes"; do
+        [ -f "$d/$v" ] && { printf '%s\n' "$d/$v"; return 0; }
+        [ -f "$d/$v.rasi" ] && { printf '%s\n' "$d/$v.rasi"; return 0; }
+    done
+    return 1
+}
+
+args=("$@")
+n=${#args[@]}
+case "$tool" in
+    polybar)
+        for ((i = 0; i < n; i++)); do
+            case "${args[i]}" in
+                -c | --config)
+                    f=${args[i + 1]:-}; f=${f/#\~/$HOME}
+                    [ -f "$f" ] && args[i + 1]=$(mirror_flat polybar '*.ini' "$f") ;;
+                --config=*)
+                    f=${args[i]#--config=}; f=${f/#\~/$HOME}
+                    [ -f "$f" ] && args[i]="--config=$(mirror_flat polybar '*.ini' "$f")" ;;
+            esac
+        done
+        ;;
+    rofi)
+        has_dpi=0
+        for ((i = 0; i < n; i++)); do
+            case "${args[i]}" in
+                -theme | -config)
+                    f=$(rofi_theme_file "${args[i + 1]:-}") && args[i + 1]=$(mirror_flat css '*.rasi' "$f") ;;
+                -dpi) has_dpi=1 ;;
+            esac
+        done
+        # rofi does not follow Xft.dpi on its own: its text needs the dpi.
+        [ "$has_dpi" = 1 ] || args+=(-dpi "$RICE_DPI")
+        ;;
+    eww)
+        for ((i = 0; i < n; i++)); do
+            case "${args[i]}" in
+                -c | --config)
+                    f=${args[i + 1]:-}; f=${f/#\~/$HOME}
+                    [ -d "$f" ] && args[i + 1]=$(mirror_eww "$f") ;;
+                --config=*)
+                    f=${args[i]#--config=}; f=${f/#\~/$HOME}
+                    [ -d "$f" ] && args[i]="--config=$(mirror_eww "$f")" ;;
+            esac
+        done
+        ;;
+esac
+
+exec "$real" "${args[@]}"

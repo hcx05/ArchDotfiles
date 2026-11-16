@@ -6,3 +6,5 @@ Xft/Hinting 1
 Xft/HintStyle "hintfull"
 Xft/Antialias 1
 Xft/RGBA "none"
+Xft/DPI 98304
+Gtk/CursorThemeSize 24

@@ -1,8 +1,15 @@
 #!/bin/sh
 
+# Sizes are design sizes times the display scale (scale_px). The shadow has
+# no per-rice setting; a rice may set P_SHADOW_R to override its radius.
+_shadow_r=$(scale_px "${P_SHADOW_R:-7}")
 sed -i "$HOME/.config/bspwm/config/picom/picom.conf" \
     -e "s/shadow-color = .*/shadow-color = \"${SHADOW_C}\"/" \
-    -e "s/^corner-radius = .*/corner-radius = ${P_CORNER_R}/"
+    -e "s/^shadow-radius = .*/shadow-radius = ${_shadow_r};/" \
+    -e "s/^shadow-offset-x = .*/shadow-offset-x = -${_shadow_r};/" \
+    -e "s/^shadow-offset-y = .*/shadow-offset-y = -${_shadow_r};/" \
+    -e "s/^corner-radius = .*/corner-radius = $(scale_px "${P_CORNER_R}")/"
+unset _shadow_r
 
 sed -i "$HOME/.config/bspwm/config/picom/picom-rules.conf" \
     -e "/#-shadow-switch/s/.*#-/\t\tshadow = ${P_SHADOWS};\t#-/" \

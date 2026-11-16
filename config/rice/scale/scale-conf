@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+# ============================================================================
+# scale-conf -- rewrite the pixel sizes of ONE config file for the current
+# display scale. A filter: the original on stdin, the scaled copy on stdout.
+#
+#   scale-conf KIND SCALE DPI [SRC_DIR MIRROR_DIR] < original > scaled
+#
+# This is what lets the rice scale as a whole without anyone going through
+# its themes: the configs keep the sizes they were designed with (18 bars,
+# 20 rofi themes, the eww widgets ...), and every program is handed a copy
+# in which each of those sizes is "design size x scale" (see ./scaled). No
+# file gets a size of its own for some resolution, so nothing can be missed
+# or drift: a new bar or theme is covered the moment it exists.
+#
+# What counts as a pixel size, per KIND:
+#   css      (rofi .rasi, eww .scss)  every "<n>px"
+#   yuck     (eww widgets)            every "<n>px", and the properties eww
+#                                     takes in bare pixels (:width :height
+#                                     :spacing :x :y :thickness :image-*)
+#   polybar  (.ini)                   every "<n>px"; the bar keys polybar
+#                                     reads as pixels when they have no unit
+#                                     (height, offset-*, border-*size,
+#                                     radius*, line-size ...); pixelsize= and
+#                                     the ";<offset>" of font-N lines.
+#                                     Plus "dpi = DPI" in each [bar/...]:
+#                                     that is what scales everything polybar
+#                                     measures in points (size= fonts and
+#                                     the "pt" paddings of the modules).
+#                                     A relative include-file is pointed at
+#                                     its mirrored copy (same directory) or
+#                                     at the original (anywhere else).
+# Percentages, point sizes, em, colors, character counts are never touched.
+# A non-zero size never becomes 0 (a 1px line stays a line).
+# ============================================================================
+set -u
+kind=${1:?kind} scale=${2:?scale} dpi=${3:?dpi} srcdir=${4:-} mirror=${5:-}
+
+exec awk -v kind="$kind" -v s="$scale" -v dpi="$dpi" -v srcdir="$srcdir" -v mirror="$mirror" '
+function px(v,    a, r, dec, out) {
+    a = (v < 0) ? -v : v
+    dec = (v ~ /\./)
+    if (dec) { r = int(a * s * 10 + 0.5) / 10; if (a > 0 && r < 0.1) r = 0.1 }
+    else     { r = int(a * s + 0.5);           if (a > 0 && r < 1)   r = 1 }
+    out = dec ? sprintf("%.1f", r) : sprintf("%d", r)
+    return ((v + 0 < 0) ? "-" : "") out
+}
+# every "<number>px" that is a value of its own (not part of a word/color)
+function scale_px_units(str,    out, pre, num, before, after) {
+    out = ""
+    while (match(str, /[0-9]+(\.[0-9]+)?px/)) {
+        pre = substr(str, 1, RSTART - 1)
+        num = substr(str, RSTART, RLENGTH - 2)
+        before = substr(pre, length(pre), 1)
+        after = substr(str, RSTART + RLENGTH, 1)
+        if (before ~ /[A-Za-z0-9_#.]/ || after ~ /[A-Za-z0-9_]/)
+            out = out pre num "px"
+        else
+            out = out pre px(num) "px"
+        str = substr(str, RSTART + RLENGTH)
+    }
+    return out str
+}
+# eww: properties given as a bare (optionally quoted) number of pixels
+function scale_yuck_props(str,    out, m, n, pre, num, after) {
+    out = ""
+    while (match(str, /:(spacing|width|height|image-width|image-height|thickness|x|y)[ \t]+"?-?[0-9]+(\.[0-9]+)?/)) {
+        m = substr(str, RSTART, RLENGTH)
+        after = substr(str, RSTART + RLENGTH, 1)
+        n = m; sub(/-?[0-9]+(\.[0-9]+)?$/, "", n)      # ":width \""
+        num = substr(m, length(n) + 1)
+        out = out substr(str, 1, RSTART - 1) n
+        out = out ((after ~ /[%pe.0-9]/) ? num : px(num))  # %, px, em: not bare
+        str = substr(str, RSTART + RLENGTH)
+    }
+    return out str
+}
+# polybar: one extent -- "28", "8px", "4.0"; "50%" / "3pt" stay as they are
+function scale_extent(v) {
+    if (v ~ /^-?[0-9]+(\.[0-9]+)?(px)?$/) {
+        if (v ~ /px$/) return px(substr(v, 1, length(v) - 2)) "px"
+        return px(v)
+    }
+    return v
+}
+# ... or polybar-style "percentage:pixel-offset" (width = 100%:-16)
+function scale_extents(v,    n, parts, i, out) {
+    n = split(v, parts, ":")
+    out = scale_extent(parts[1])
+    for (i = 2; i <= n; i++) out = out ":" scale_extent(parts[i])
+    return out
+}
+function scale_font(v,    m, pre) {
+    if (match(v, /pixelsize=[0-9]+(\.[0-9]+)?/)) {
+        m = substr(v, RSTART + 10, RLENGTH - 10)
+        v = substr(v, 1, RSTART + 9) px(m) substr(v, RSTART + RLENGTH)
+    }
+    if (match(v, /;-?[0-9]+"?[ \t]*$/)) {              # vertical offset, px
+        m = substr(v, RSTART + 1); pre = substr(v, 1, RSTART)
+        sub(/"?[ \t]*$/, "", m)
+        v = pre px(m) ((v ~ /"[ \t]*$/) ? "\"" : "")
+    }
+    return v
+}
+
+kind == "css"  { print scale_px_units($0); next }
+kind == "yuck" { print scale_px_units(scale_yuck_props($0)); next }
+
+kind == "polybar" {
+    line = $0
+    if (line ~ /^[ \t]*[;#]/) { print line; next }
+    if (line ~ /^[ \t]*\[/) {
+        inbar = (line ~ /^[ \t]*\[bar\//)
+        print line
+        if (inbar) print "dpi = " dpi
+        next
+    }
+    eq = index(line, "=")
+    if (eq == 0) { print line; next }
+    key = substr(line, 1, eq - 1); val = substr(line, eq + 1)
+    gsub(/^[ \t]+|[ \t]+$/, "", key)
+    lead = val; sub(/[^ \t].*$/, "", lead)
+    gsub(/^[ \t]+|[ \t]+$/, "", val)
+    orig = val
+
+    if (inbar && key ~ /^dpi(-[xy])?$/) next          # replaced above
+    if (key == "include-file" && val !~ /^[\/~$]/ && srcdir != "") {
+        val = (val ~ /\//) ? srcdir "/" val : mirror "/" val
+    } else if (inbar && key ~ /^font-[0-9]+$/) {
+        val = scale_font(val)
+    } else if (inbar && key ~ /^(height|width|offset-[xy]|border(-[a-z]+)?-size|radius(-[a-z-]+)?|line-size|underline-size|overline-size|tray-maxsize|tray-offset-[xy])$/) {
+        val = scale_extents(val)
+    } else {
+        val = scale_px_units(val)
+    }
+    # an untouched line goes out exactly as it came in
+    print (val == orig) ? line : key " =" lead val
+    next
+}
+{ print }
+'
