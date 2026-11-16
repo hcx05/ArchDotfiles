@@ -107,6 +107,10 @@ pidof -q eww || { eww -c "${HOME}"/.config/bspwm/eww daemon & }
 # Launch clipboard daemon
 run clipcatd
 
+# VMware guest agent: host <-> guest clipboard copy/paste and drag & drop
+command -v vmware-user-suid-wrapper >/dev/null && ! pgrep -f '^[^ ]*vmtoolsd -n vmusr' >/dev/null \
+    && vmware-user-suid-wrapper &
+
 # Launch input method (Super+i toggles chewing via toggle-ibus.sh)
 pidof -q ibus-daemon || ibus-daemon -drx
 

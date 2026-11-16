@@ -101,11 +101,15 @@ mirror_eww() {   # source_dir -> prints the mirrored dir
                 *.yuck) convert yuck < "$src/$rel" > "$mir/$rel" ;;
                 *) ln -sfn "$src/$rel" "$mir/$rel"; continue ;;
             esac
+            # relative to the file (scss @import) or to the config root, which
+            # is eww's cwd (image paths, url() in :style of an included yuck)
             grep -oE "[\"'](\.\./)+[^\"']+[\"']" "$src/$rel" 2>/dev/null | tr -d "\"'" | while IFS= read -r ref; do
-                target="$(dirname "$src/$rel")/$ref"
-                [ -e "$target" ] || continue
-                mkdir -p "$(dirname "$mir/$rel")/$(dirname "$ref")"
-                ln -sfn "$(readlink -f "$target")" "$(dirname "$mir/$rel")/$ref"
+                for base in "$(dirname "$rel")" .; do
+                    target="$src/$base/$ref"
+                    [ -e "$target" ] || continue
+                    mkdir -p "$(dirname "$mir/$base/$ref")"
+                    ln -sfn "$(readlink -f "$target")" "$mir/$base/$ref"
+                done
             done
         done
         stamp "$mir"

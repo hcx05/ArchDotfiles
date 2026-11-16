@@ -28,8 +28,16 @@ done
 
 # Function to obtain monitor info (POSIX-compliant)
 get_monitor_info() {
+    # The mode in use ("*") if the output is on -- a resolution picked by
+    # hand survives a bspwm restart -- else the first (preferred) one.
     echo "$XRANDR_OUTPUT" | awk -v monitor="$1" '
-        $1 == monitor { getline; print $1, $2 }
+        $1 == monitor { inmon = 1; next }
+        inmon && /^[^ \t]/ { exit }
+        inmon && /^[ \t]+[0-9]+x[0-9]+/ {
+            if (first == "") first = $1 " " $2
+            for (i = 2; i <= NF; i++) if ($i ~ /\*/) { cur = $1 " " $i; exit }
+        }
+        END { print (cur != "") ? cur : first }
     ' | tr -d '*+'
 }
 
