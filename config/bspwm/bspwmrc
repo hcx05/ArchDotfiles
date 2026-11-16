@@ -112,6 +112,9 @@ command -v vmware-user-suid-wrapper >/dev/null && ! pgrep -f '^[^ ]*vmtoolsd -n 
     && vmware-user-suid-wrapper &
 
 # Launch input method (Super+i toggles chewing via toggle-ibus.sh)
+# No ibus hotkey of its own: its default <Super>space trigger also grabs
+# Super+Shift+space (reverse switching), which is the BarSelector key.
+gsettings set org.freedesktop.ibus.general.hotkey triggers "[]" 2>/dev/null
 pidof -q ibus-daemon || ibus-daemon -drx
 
 # Tap Right Shift = toggle input method (bound to XF86Launch1 in sxhkdrc)
