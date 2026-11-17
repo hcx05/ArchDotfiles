@@ -124,6 +124,11 @@ command -v xcape >/dev/null && { pkill -x xcape; xcape -e 'Shift_R=XF86Launch1';
 # Self-guards with a flock, so a bspwm reload can't stack daemons.
 python3 "$HOME"/.config/rice/clipboard/clipd.py &
 
+# Firefox profile lock left behind by a VM crash: its PID can be reused after
+# reboot, then Firefox refuses to start ("already running"). Nothing can be
+# running yet at session start, so a leftover lock is always stale.
+pgrep -x firefox >/dev/null || rm -f "$HOME"/.config/mozilla/firefox/*/lock "$HOME"/.mozilla/firefox/*/lock
+
 # Launch polkit
 run lxpolkit
 

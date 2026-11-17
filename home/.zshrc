@@ -165,7 +165,26 @@ alias ll='eza --icons=always --color=always -la'
 
 # fastfetch on startup
 if [[ -o interactive ]] && command -v fastfetch >/dev/null; then
-  if [[ -z $TMUX && $TERM == tmux* ]]; then
+  # The PNG logo needs the kitty graphics protocol, i.e. the OUTER terminal
+  # must be kitty (also when inside tmux). Alacritty/st can't show it: there
+  # it fell back to the ASCII logo, and inside tmux kitten icat printed its
+  # Unicode placeholder cells as a block square. Detect the outer terminal.
+  if [[ -n $TMUX ]]; then
+    _outer=$(tmux display -p '#{client_termname}' 2>/dev/null)
+  elif [[ $TERM == tmux* ]]; then
+    _outer=$(tmux -S /tmp/tmux-1000/default display -p '#{client_termname}' 2>/dev/null)
+  else
+    _outer=$TERM
+  fi
+  if [[ $_outer != xterm-kitty ]]; then
+    # Not kitty: draw the same PNG with text blocks (needs pacman -S chafa),
+    # else fastfetch's built-in Arch ASCII logo.
+    if [[ -e /usr/lib/libchafa.so.0 ]]; then
+      fastfetch --logo-type chafa
+    else
+      fastfetch --logo arch --logo-type builtin
+    fi
+  elif [[ -z $TMUX && $TERM == tmux* ]]; then
     # sudo su clears $TMUX and kitten icat then fails its image-support
     # detection; restore $TMUX and force the flags through a PATH shim.
     _shim="$HOME/.cache/kitten-shim"
@@ -181,6 +200,7 @@ if [[ -o interactive ]] && command -v fastfetch >/dev/null; then
   else
     fastfetch
   fi
+  unset _outer
 fi
 
 # Ctrl+Left / Ctrl+Right: move by word

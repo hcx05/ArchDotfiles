@@ -53,7 +53,7 @@ NORMAL_BC="$black"      # Normal border color
 FOCUSED_BC="$cyan"      # Focused border color
 
 # Terminal font & size
-term_font_size="10"
+term_font_size="8"
 term_font_name="JetBrainsMono Nerd Font"
 
 # Picom options

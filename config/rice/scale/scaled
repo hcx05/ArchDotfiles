@@ -138,6 +138,15 @@ args=("$@")
 n=${#args[@]}
 case "$tool" in
     polybar)
+        # BAR_SCALE (scale.conf): extra multiplier for the bar only, so the
+        # bar can stay slimmer than text. Snapped like the main scale; the
+        # mirror stamp carries the result, so a change rebuilds the mirror.
+        bar_mul=$(awk -F= '/^BAR_SCALE=/ { gsub(/[ "\047]/, "", $2); print $2; exit }' "$SCALE_DIR/scale.conf" 2>/dev/null)
+        if [ -n "$bar_mul" ]; then
+            read -r RICE_SCALE RICE_DPI < <(awk -v s="$RICE_SCALE" -v b="$bar_mul" 'BEGIN {
+                v = int(s * b / 0.05 + 0.5) * 0.05; if (v < 0.5) v = 0.5
+                printf "%g %d\n", v, int(96 * v + 0.5) }')
+        fi
         for ((i = 0; i < n; i++)); do
             case "${args[i]}" in
                 -c | --config)
