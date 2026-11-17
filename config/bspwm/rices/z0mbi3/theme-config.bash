@@ -41,7 +41,7 @@ accent_color="#131621"
 arch_icon="#0f94d2"
 
 # Bar
-main_bar="bar18"
+main_bar="bar14"
 
 # Bspwm options
 BORDER_WIDTH="0"        # Bspwm border
