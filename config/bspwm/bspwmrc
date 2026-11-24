@@ -124,6 +124,7 @@ command -v vmware-user-suid-wrapper >/dev/null && ! pgrep -f '^[^ ]*vmtoolsd -n 
 # physical X11 coordinates when xsettingsd sets Gdk/WindowScalingFactor >= 2;
 # fonts still scale cleanly via xsettingsd's Xft/DPI.
 gsettings set org.freedesktop.ibus.general.hotkey triggers "[]" 2>/dev/null
+gsettings set org.freedesktop.ibus.panel show-icon-on-systray false 2>/dev/null
 pidof -q ibus-daemon || GDK_SCALE=1 ibus-daemon -drx
 
 # Tap Right Shift = toggle input method (bound to XF86Launch1 in sxhkdrc)

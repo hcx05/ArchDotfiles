@@ -21,3 +21,5 @@ if [ "$CURRENT" = "$CJK_ENGINE" ]; then
 else
     ibus engine "$CJK_ENGINE"
 fi
+
+polybar-msg action "#ibus.hook.0" >/dev/null 2>&1 || true
