@@ -84,6 +84,46 @@ def load_tmux_buffers():
     return bufs
 
 
+def clear_tmux_buffers():
+    """Delete all tmux paste buffers; no-op if no tmux server is running."""
+    try:
+        names = subprocess.run(
+            ["tmux", "list-buffers", "-F", "#{buffer_name}"],
+            capture_output=True, text=True, timeout=2,
+        )
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        return
+    if names.returncode != 0:
+        return
+    for name in names.stdout.splitlines():
+        name = name.strip()
+        if not name:
+            continue
+        try:
+            subprocess.run(
+                ["tmux", "delete-buffer", "-b", name],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=2,
+            )
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            continue
+
+
+def clear_all_history():
+    """Clear disk history, all tmux buffers, and current X selections."""
+    os.makedirs(os.path.dirname(HISTORY), exist_ok=True)
+    open(HISTORY, "w").close()
+    clear_tmux_buffers()
+    for sel in ("clipboard", "primary"):
+        try:
+            subprocess.run(
+                ["xclip", "-selection", sel, "-i"],
+                input=b"", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                timeout=2,
+            )
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            pass
+
+
 def preview(text):
     """One-line, display-safe rendering of a clip for the rofi row."""
     flat = " ".join(text.split())        # collapse all whitespace/newlines
@@ -221,7 +261,7 @@ def main():
     if not items:
         return
     if idx == clear_index:
-        open(HISTORY, "w").close()
+        clear_all_history()
         notify(f"{ICO_CLEAR}  history cleared")
         return
     if 0 <= idx < len(items):
