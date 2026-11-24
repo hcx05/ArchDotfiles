@@ -160,7 +160,6 @@ alias ll='eza --icons=always --color=always -la'
 #  ┌─┐┬ ┬┌┬┐┌─┐  ┌─┐┌┬┐┌─┐┬─┐┌┬┐
 #  ├─┤│ │ │ │ │  └─┐ │ ├─┤├┬┘ │
 #  ┴ ┴└─┘ ┴ └─┘  └─┘ ┴ ┴ ┴┴└─ ┴
-[[ -x $HOME/.local/bin/colorscript ]] && $HOME/.local/bin/colorscript -r
 #disable-fzf-tab
 
 # fastfetch on startup
@@ -210,8 +209,29 @@ bindkey '^[[5C' forward-word
 bindkey '^[[5D' backward-word
 
 alias vim='nvim'
+alias cat='bat'
 
 export PATH="$HOME/.local/share/gem/ruby/3.4.0/bin:$PATH"
+
+
+# Added by Antigravity CLI installer
+export PATH="$HOME/.local/bin:$PATH"
+
+# Keep interactive shells synced with the current display scale (so GUI apps
+# like burpsuite / wireshark / firefox launched from an existing tmux pane or
+# terminal always inherit the latest QT_SCALE_FACTOR / JDK_JAVA_OPTIONS / etc.).
+_rice_sync_scale() {
+    local f="${XDG_CACHE_HOME:-$HOME/.cache}/rice/scale.env"
+    [[ -r "$f" ]] || return 0
+    local mtime
+    mtime=$(stat -c %Y "$f" 2>/dev/null) || return 0
+    if [[ "$mtime" != "${_RICE_SCALE_MTIME:-}" ]]; then
+        source "$f"
+        _RICE_SCALE_MTIME="$mtime"
+    fi
+}
+_rice_sync_scale
+add-zsh-hook -Uz precmd _rice_sync_scale
 
 alias floating-desktop="bspc query -N -d -n .window | while read n; do bspc node \"\$n\" -t floating; xdotool windowsize \"\$n\" 1920 1080; xdotool windowmove \"\$n\" 320 180; done"
 alias tiled-desktop="bspc query -N -d -n .window | while read n; do bspc node \"\$n\" -t tiled; done"

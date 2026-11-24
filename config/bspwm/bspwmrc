@@ -83,8 +83,10 @@ run() {
 # Set system vars for polybar
 "$HOME"/.config/bspwm/bin/SetSysVars
 
-# Launch sxhkd daemon
-run sxhkd -c "${HOME}"/.config/bspwm/config/sxhkdrc
+# Launch (or restart) sxhkd daemon so hotkey-launched apps always inherit the
+# current display scale env vars (QT_SCALE_FACTOR, JDK_JAVA_OPTIONS, etc.).
+pkill -x sxhkd 2>/dev/null
+sxhkd -c "${HOME}"/.config/bspwm/config/sxhkdrc &
 
 # Load current theme
 "${HOME}"/.config/bspwm/bin/Theme.sh
@@ -101,8 +103,12 @@ run picom --config "${HOME}"/.config/bspwm/config/picom/picom.conf
 # Launch xsettingsd
 run xsettingsd --config="${HOME}"/.config/bspwm/config/xsettingsd >/dev/null 2>&1
 
-# Launch eww daemon
-pidof -q eww || { eww -c "${HOME}"/.config/bspwm/eww daemon & }
+# Launch eww daemon (or rebuild its scaled mirror & reload if already running)
+if pidof -q eww; then
+    eww -c "${HOME}"/.config/bspwm/eww reload >/dev/null 2>&1 &
+else
+    eww -c "${HOME}"/.config/bspwm/eww daemon &
+fi
 
 # Launch clipboard daemon
 run clipcatd
@@ -114,8 +120,11 @@ command -v vmware-user-suid-wrapper >/dev/null && ! pgrep -f '^[^ ]*vmtoolsd -n 
 # Launch input method (Super+i toggles chewing via toggle-ibus.sh)
 # No ibus hotkey of its own: its default <Super>space trigger also grabs
 # Super+Shift+space (reverse switching), which is the BarSelector key.
+# GDK_SCALE=1 prevents ibus-ui-gtk3 from double-scaling SetCursorLocation
+# physical X11 coordinates when xsettingsd sets Gdk/WindowScalingFactor >= 2;
+# fonts still scale cleanly via xsettingsd's Xft/DPI.
 gsettings set org.freedesktop.ibus.general.hotkey triggers "[]" 2>/dev/null
-pidof -q ibus-daemon || ibus-daemon -drx
+pidof -q ibus-daemon || GDK_SCALE=1 ibus-daemon -drx
 
 # Tap Right Shift = toggle input method (bound to XF86Launch1 in sxhkdrc)
 command -v xcape >/dev/null && { pkill -x xcape; xcape -e 'Shift_R=XF86Launch1'; }
