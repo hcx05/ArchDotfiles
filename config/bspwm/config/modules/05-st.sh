@@ -41,4 +41,6 @@ st.alpha:   ${P_TERM_OPACITY}
 EOF
 
 xrdb -merge "$HOME/.config/st/xresources"
+printf 'st.font: JetBrainsMono Nerd Font:style:regular:pixelsize=%s\nst.borderpx: %s\n' \
+    "$(scale_px 13)" "$(scale_px 15)" | xrdb -nocpp -merge 2>/dev/null
 pidof -q st && killall -USR1 -e st

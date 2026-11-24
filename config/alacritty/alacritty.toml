@@ -13,7 +13,6 @@ live_config_reload = true
 
 [env]
 TERM = "alacritty"
-WINIT_X11_SCALE_FACTOR = "1.0"
 
 [cursor]
 blink_interval = 550
